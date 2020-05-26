@@ -1,16 +1,26 @@
-if (process.env.NODE_ENV == "development") require('dotenv').config({ path: "../env/dev.env" })
-else require('dotenv').config({ path: "./environment/prod.env" })
+//Requiring the correct env files by checking NODE_ENV
+const dev = process.env.NODE_ENV == "development" 
+if (dev) require('dotenv').config({ path: "./env/dev.env" })
+else require('dotenv').config({ path: "./env/prod.env" })
 
+
+//npm dependencies
 const express = require('express')
 const morgan = require("morgan") //HTTP request logger
 const bodyParser = require('body-parser') //Pase request body to JSON
 const cors = require("cors") // Access control
 const mongoose = require('mongoose')
+
+
+//custom properties and imports
 const port = process.env.PORT || "3000"
 const dbConfig = require("./config/database-config.json")
+const ApiError = require("./models/apiError.model")
+const dbBaseUrl = process.env.dbBaseUrl
+
 
 //MongoDB database connection
-let databaseString = `${dbConfig.localhostDbString}${dbConfig.dbName}`
+let databaseString = `${dbBaseUrl}${dbConfig.dbName}`
 mongoose.connect(databaseString, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -27,13 +37,13 @@ mongoose.connect(databaseString, {
 const app = express()
 app.use(bodyParser.json()) //Parse request body to JSON
 app.use(cors('*'))
-if (process.env.NODE_ENV == "development") app.use(morgan("dev")) //dont show all logs when in production mode
+if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
 
 //Routes imports
-const testRoute = require("./routes/test.route")
+const organisationRoute = require("./routes/organisation.route")
 
 //Assign Routes
-app.use("/", testRoute)
+app.use("/", organisationRoute)
 
 //Catch all non existing endpoints
 app.use("*", function (req, res, next) {
@@ -41,7 +51,7 @@ app.use("*", function (req, res, next) {
 })
 
 //Error middleware
-app.use(function (err, req, res, next) {
+app.use(function (err, req, res, next) {   
     res.status(err.code || 500).json(err).send();
 })
 
