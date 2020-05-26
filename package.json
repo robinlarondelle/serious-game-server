@@ -1,0 +1,29 @@
+{
+  "name": "serious-game-server",
+  "version": "1.0.0",
+  "description": "The Node.js server for the Serious Game Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "SET NODE_ENV=development& nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robinlarondelle/serious-game-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robinlarondelle/serious-game-server/issues"
+  },
+  "homepage": "https://github.com/robinlarondelle/serious-game-server#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.16",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.4"
+  }
+}
