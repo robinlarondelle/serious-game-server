@@ -43,7 +43,7 @@ if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
 const organisationRoute = require("./routes/organisation.route")
 
 //Assign Routes
-app.use("/", organisationRoute)
+app.use("/organisation", organisationRoute)
 
 //Catch all non existing endpoints
 app.use("*", function (req, res, next) {
@@ -51,7 +51,9 @@ app.use("*", function (req, res, next) {
 })
 
 //Error middleware
-app.use(function (err, req, res, next) {   
+app.use(function (err, req, res, next) { 
+    console.log(err);
+      
     res.status(err.code || 500).json(err).send();
 })
 
