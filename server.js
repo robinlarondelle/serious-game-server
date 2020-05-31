@@ -23,7 +23,9 @@ const dbBaseUrl = process.env.dbBaseUrl
 let databaseString = `${dbBaseUrl}${dbConfig.dbName}`
 mongoose.connect(databaseString, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
 })
     .then(() => console.log('successfully connected to the database'))
     .catch(err => {
@@ -41,9 +43,11 @@ if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
 
 //Routes imports
 const organisationRoute = require("./routes/organisation.route")
+const departmentRoute = require("./routes/department.route")
 
 //Assign Routes
 app.use("/organisation", organisationRoute)
+app.use("/organisation", departmentRoute)
 
 //Catch all non existing endpoints
 app.use("*", function (req, res, next) {

@@ -2,10 +2,14 @@ const mongoose = require("mongoose")
 const Department = require("./department.model")
 
 const Organisation = mongoose.Schema({
-    _id: Number,
+    _id: {
+        type: Number
+    },
     name: {
         type: String,
-        required: [true, 'The organisation name is required']
+        required: [true, 'The organisation name is required'],
+        unique: [true, 'There already exists an Organisation with this name'],
+        index: true
     },
     pin: {
         type: Number,
@@ -13,9 +17,14 @@ const Organisation = mongoose.Schema({
         min: [100000, "The PIN needs to be a minimum of 10000"],
         max: [999999, "The PIN needs to be a maximum of 99999"],
     },
-    departments: [Department.schema]
+    departments: [{
+        type: Department.schema,
+        required: false
+    }]
 }, {
     versionKey: false
 })
+
+Organisation.virtual('orgID').get(function() { return this._id; });
 
 module.exports = mongoose.model("organisation", Organisation)

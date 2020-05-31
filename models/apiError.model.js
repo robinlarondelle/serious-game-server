@@ -1,5 +1,6 @@
 module.exports = class ApiError {
-    constructor(message, status) {
+    constructor(error = undefined, message, status) {
+        this.error = error
         this.message = message
         this.code = status
     }
