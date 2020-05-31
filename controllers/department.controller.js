@@ -6,7 +6,7 @@ module.exports = {
     getAllDepartmentsFromOrganisation(req, res, next) {
         const { orgID } = req.params
 
-        Organisation.findOne({ _id: orgID })
+        Organisation.findById(orgID)
             .then(organisation => {
                 if (organisation === null) next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
                 else res.status(200).json(organisation.departments).end()
@@ -45,5 +45,22 @@ module.exports = {
                 }).catch(err => next(new ApiError("ServerError", err, 400)))
             } else next(new ApiError("ValidationError", error, 400))
         })
+    },
+
+    updateDepartmentByID(req, res, next) {
+        const {orgID, depID} = req.params
+        const {name} = req.body
+
+        Organisation.findById(orgID).then(org => {
+            if (org !== null) {
+                Organisation.findOneAndUpdate(
+                    {"_id":orgID, "departments._id": depID},
+                    {$set: {"departments.$.name": name}},
+                    {new: true}
+                )
+                .then(updatedDoc => res.status(200).json(updatedDoc).end())
+                .catch(err => next(new ApiError("UpdateError", err, 400)))
+            } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
+        }).catch(err => next(new ApiError("ServerError", err, 400)))
     }
 }

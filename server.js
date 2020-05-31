@@ -51,7 +51,7 @@ app.use("/organisation", departmentRoute)
 
 //Catch all non existing endpoints
 app.use("*", function (req, res, next) {
-    next(new ApiError("Endpoint not found", 404))
+    next(new ApiError("ServerError", "Endpoint not found", 404))
 })
 
 //Error middleware
