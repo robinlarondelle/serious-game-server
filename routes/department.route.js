@@ -5,5 +5,6 @@ routes.get("/:orgID/department", departmentController.getAllDepartmentsFromOrgan
 routes.get("/:orgID/department/:depID", departmentController.getDepartmentByID)
 routes.post("/:orgID/department", departmentController.addDepartment)
 routes.put("/:orgID/department/:depID", departmentController.updateDepartmentByID)
+routes.delete("/:orgID/department/:depID", departmentController.deleteDepartmentByID)
 
 module.exports = routes
