@@ -2,10 +2,6 @@ const mongoose = require("mongoose")
 const Player = require("./player.model")
 
 const Department = mongoose.Schema({
-    _id: {
-        type: mongoose.Types.ObjectId,
-        alias: 'depID'
-    },
     name: {
         type: String,
         minlength: [3, 'Min 3 chars required for the Department name'], 

@@ -19,7 +19,7 @@ module.exports = {
 
         Organisation.findById(orgID)
             .then(organisation => {                               
-                const dep = organisation.departments.find(dep => dep.depID == depID)
+                const dep = organisation.departments.find(dep => dep._id == depID)
                 if (dep) res.status(200).json(dep).end()
                 else next(new ApiError("NotFound", `No Department with ID '${depID}' found`, 400))
             })
@@ -76,6 +76,5 @@ module.exports = {
                     .catch(err => next(new ApiError("ServerError", err, 400)))
             } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
         }).catch(err => next(new ApiError("ServerError", err, 400)))
-
     }
 }
