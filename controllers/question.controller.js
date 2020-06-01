@@ -3,14 +3,16 @@ const ApiError = require("../models/apiError.model")
 
 module.exports = {
     getAllQuestionsFromOrganisation(req, res, next) {
-        console.log(req.params);
-        
-        const {orgID} = req.params  
+        const { organisation } = req
+        res.status(200).json(organisation.questions).end()
+    },
 
-        Organisation.findById("fe23f2r").then(org => {
-            if (org !== null) {
-                res.status(200).json(org.questions).end()
-            } else next(new ApiError("NotFound", `Organisation with ID '${orgID}' not found`, 404))
-        }).catch(err => next(new ApiError("ServerError", err, 400)))
+    getQuestionFromOrganisationByID(req, res, next) {
+        const {organisation } = req
+        const {queID} = req.params
+        const question = organisation.questions.find(q => q._id == queID)
+
+        if (question) res.status(200).json(question).end()
+        else next(new ApiError('NotFound', `No Question with ID '${queID}' found in Organisation '${organisation._id}'`, 404))
     }
 }
