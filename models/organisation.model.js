@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Department = require("./department.model")
+const Question = require("./question.model")
 
 const Organisation = mongoose.Schema({
     _id: {
@@ -17,10 +18,8 @@ const Organisation = mongoose.Schema({
         min: [100000, "The PIN needs to be a minimum of 10000"],
         max: [999999, "The PIN needs to be a maximum of 99999"],
     },
-    departments: [{
-        type: Department.schema,
-        required: false
-    }]
+    departments: [Department.schema],
+    questions: [Question.schema]
 }, {
     versionKey: false
 })
