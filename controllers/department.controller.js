@@ -4,14 +4,8 @@ const ApiError = require("../models/apiError.model")
 
 module.exports = {
     getAllDepartmentsFromOrganisation(req, res, next) {
-        const { orgID } = req.params
-
-        Organisation.findById(orgID)
-            .then(organisation => {
-                if (organisation === null) next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
-                else res.status(200).json(organisation.departments).end()
-            })
-            .catch(err => next(new ApiError("ServerError", err, 400)))
+        const {organisation} = req
+        res.status(200).json(organisation.departments).end()
     },
 
     getDepartmentByID(req, res, next) {

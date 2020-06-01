@@ -1,5 +1,5 @@
 //Requiring the correct env files by checking NODE_ENV
-const dev = process.env.NODE_ENV == "development" 
+const dev = process.env.NODE_ENV == "development"
 if (dev) require('dotenv').config({ path: "./env/dev.env" })
 else require('dotenv').config({ path: "./env/prod.env" })
 
@@ -36,29 +36,45 @@ mongoose.connect(databaseString, {
         process.exit()
     })
 
+//Server setup    
 const app = express()
-app.use(bodyParser.json()) //Parse request body to JSON
+app.use(bodyParser.json())
 app.use(cors('*'))
 if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
+
+
+//Middleware imports
+const organisationMiddleware = require("./middlewares/organisation.middleware")
+
+
+//Middleware handlers
+app.param('orgID', organisationMiddleware.findOrganisationByID)
+
 
 //Routes imports
 const organisationRoute = require("./routes/organisation.route")
 const departmentRoute = require("./routes/department.route")
+const questionRoute = require("./routes/question.route")
 
-//Assign Routes
+
+//Route Handlers
 app.use("/organisation", organisationRoute)
-app.use("/organisation", departmentRoute)
+app.use("/organisation/:orgID/department", departmentRoute)
+app.use("/organisation/:orgID/question", questionRoute)
+
 
 //Catch all non existing endpoints
 app.use("*", function (req, res, next) {
     next(new ApiError("ServerError", "Endpoint not found", 404))
 })
 
+
 //Error middleware
-app.use(function (err, req, res, next) { 
+app.use(function (err, req, res, next) {
     console.log(err);
-      
+
     res.status(err.code || 500).json(err).send();
 })
 
+//Run server
 app.listen(port, () => console.log(`Server is running on port: ${port}`))
