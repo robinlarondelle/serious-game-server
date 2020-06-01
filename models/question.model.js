@@ -17,7 +17,7 @@ const Question = new Schema({
 
 Question.pre('save', function(next) {
     const answer = this.possibleAnswers.find(a => a == this.correctAnswer)
-    if (!answer) next(new Error("The correct answer must be a possible answer"))
+    if (!answer) next("The correct answer must be a possible answer")
     else next()
 })
 

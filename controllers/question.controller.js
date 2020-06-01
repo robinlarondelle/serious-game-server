@@ -1,4 +1,5 @@
 const Organisation = require("../models/organisation.model")
+const Question = require("../models/question.model")
 const ApiError = require("../models/apiError.model")
 
 module.exports = {
@@ -8,11 +9,30 @@ module.exports = {
     },
 
     getQuestionFromOrganisationByID(req, res, next) {
-        const {organisation } = req
-        const {queID} = req.params
+        const { organisation } = req
+        const { queID } = req.params
         const question = organisation.questions.find(q => q._id == queID)
 
         if (question) res.status(200).json(question).end()
         else next(new ApiError('NotFound', `No Question with ID '${queID}' found in Organisation '${organisation._id}'`, 404))
+    },
+
+    addQuestionToOrganisation(req, res, next) {
+        const { organisation } = req
+        const { question, correctAnswer, possibleAnswers } = req.body
+        const questionDoc = new Question({
+            question,
+            correctAnswer,
+            possibleAnswers
+        })
+
+        questionDoc.validate(err => {
+            if (!err) {
+                organisation.questions.push(questionDoc)
+                organisation.save().then(savedDoc => {
+                    res.status(201).json(savedDoc).end()
+                }).catch(err => next(new ApiError('ServerError', err, 400)))
+            } else next(new ApiError("ValidationError", err, 400))
+        })
     }
 }
