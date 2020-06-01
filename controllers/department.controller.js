@@ -4,19 +4,17 @@ const ApiError = require("../models/apiError.model")
 
 module.exports = {
     getAllDepartmentsFromOrganisation(req, res, next) {
-        const {organisation} = req
+        const { organisation } = req
         res.status(200).json(organisation.departments).end()
     },
 
     getDepartmentByID(req, res, next) {
-        const { orgID, depID } = req.params
+        const { depID } = req.params
+        const { organisation } = req
+        const dep = organisation.departments.find(dep => dep._id == depID)
 
-        Organisation.findById(orgID)
-            .then(organisation => {                               
-                const dep = organisation.departments.find(dep => dep._id == depID)
-                if (dep) res.status(200).json(dep).end()
-                else next(new ApiError("NotFound", `No Department with ID '${depID}' found`, 400))
-            })
+        if (dep) res.status(200).json(dep).end()
+        else next(new ApiError("NotFound", `No Department with ID '${depID}' found`, 400))
     },
 
     addDepartment(req, res, next) {
@@ -32,8 +30,8 @@ module.exports = {
                         if (!dups) { //check for duplicate names in the Departments list
                             organisation.departments.push(newDepartment)
                             organisation.save()
-                            .then(() => res.status(201).json(newDepartment).end())
-                            .catch(err => next(new ApiError("ServerError", err, 400)))
+                                .then(() => res.status(201).json(newDepartment).end())
+                                .catch(err => next(new ApiError("ServerError", err, 400)))
                         } else next(new ApiError("DuplicateError", `There already exists an Department with name '${newDepartment.name}' in Organisation '${orgID}'`, 400))
                     } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
                 }).catch(err => next(new ApiError("ServerError", err, 400)))
@@ -42,24 +40,24 @@ module.exports = {
     },
 
     updateDepartmentByID(req, res, next) {
-        const {orgID, depID} = req.params
-        const {name} = req.body
+        const { orgID, depID } = req.params
+        const { name } = req.body
 
         Organisation.findById(orgID).then(org => {
             if (org !== null) {
                 Organisation.findOneAndUpdate(
-                    {"_id":orgID, "departments._id": depID},
-                    {$set: {"departments.$.name": name}},
-                    {new: true}
+                    { "_id": orgID, "departments._id": depID },
+                    { $set: { "departments.$.name": name } },
+                    { new: true }
                 )
-                .then(updatedDoc => res.status(200).json(updatedDoc).end())
-                .catch(err => next(new ApiError("UpdateError", err, 400)))
+                    .then(updatedDoc => res.status(200).json(updatedDoc).end())
+                    .catch(err => next(new ApiError("UpdateError", err, 400)))
             } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
         }).catch(err => next(new ApiError("ServerError", err, 400)))
     },
 
     deleteDepartmentByID(req, res, next) {
-        const {orgID, depID} = req.params
+        const { orgID, depID } = req.params
 
         Organisation.findById(orgID).then(org => {
             if (org !== null) {
