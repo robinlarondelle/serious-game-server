@@ -8,6 +8,16 @@ module.exports = {
         })
     },
 
+    getOrganisationByID(req, res, next) {
+        const {orgID} = req.params 
+
+        Organisation.findById(orgID).then(org => {
+            if (org !== null) {
+                res.status(200).json(org).end()
+            } else next(new ApiError("NotFound", `Organisation with ID '${orgID}' not found`, 404))
+        })
+    },
+
     addOrganisation(req, res, next) {
         let { name, pin } = req.body
         if (!pin) pin = Math.floor(Math.random() * 900000) + 100000 //create PIN if not supplied
