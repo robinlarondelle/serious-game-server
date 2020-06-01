@@ -24,15 +24,13 @@ module.exports = {
 
         newDepartment.validate(error => {
             if (!error) {
-                if (organisation !== null) {
-                    const dups = organisation.departments.find(dep => dep.name == newDepartment.name)
-                    if (!dups) { //check for duplicate names in the Departments list
-                        organisation.departments.push(newDepartment)
-                        organisation.save()
-                            .then(() => res.status(201).json(newDepartment).end())
-                            .catch(err => next(new ApiError("ServerError", err, 400)))
-                    } else next(new ApiError("DuplicateError", `There already exists an Department with name '${newDepartment.name}' in Organisation '${orgID}'`, 400))
-                } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
+                const dups = organisation.departments.find(dep => dep.name == newDepartment.name)
+                if (!dups) { //check for duplicate names in the Departments list
+                    organisation.departments.push(newDepartment)
+                    organisation.save()
+                        .then(() => res.status(201).json(newDepartment).end())
+                        .catch(err => next(new ApiError("ServerError", err, 400)))
+                } else next(new ApiError("DuplicateError", `There already exists an Department with name '${newDepartment.name}' in Organisation '${orgID}'`, 400))
             } else next(new ApiError("ValidationError", error, 400))
         })
     },
@@ -55,7 +53,7 @@ module.exports = {
         const { depID } = req.params
         const { organisation } = req
         const newDepartments = organisation.departments.filter(dep => dep._id != depID)
-        
+
         organisation.departments = newDepartments
         organisation.save()
             .then(savedOrg => res.status(200).json(savedOrg).end())
