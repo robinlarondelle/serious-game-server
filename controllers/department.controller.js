@@ -46,7 +46,7 @@ module.exports = {
             { new: true }
         )
             .then(updatedDoc => res.status(200).json(updatedDoc).end())
-            .catch(err => next(new ApiError("UpdateError", err, 400)))
+            .catch(err => next(new ApiError("ServerError", err, 400)))
     },
 
     deleteDepartmentByID(req, res, next) {
