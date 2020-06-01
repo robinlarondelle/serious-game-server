@@ -47,7 +47,7 @@ module.exports = {
 
         updatedQuestion.validate(err => {
             if (!err) {
-                if (!!!questionIndex) {
+                if (questionIndex != null) {
                     organisation.questions.splice(questionIndex, 1)
                     organisation.questions.push(updatedQuestion)
                     organisation.save()
@@ -56,5 +56,20 @@ module.exports = {
                 } else next(new ApiError('NotFound', `No Question with ID '${queID} found in Organisation '${organisation.name}'`, 404))
             } else next(new ApiError("ValidationError", err, 400))
         })
+    },
+
+    deleteQuestionFromOrganisationByID(req, res, next) {
+        const { organisation } = req
+        const { queID } = req.params
+
+        const questionIndex = organisation.questions.findIndex(q => q._id == queID)
+        console.log(questionIndex);
+        
+        if (questionIndex != null) {
+            organisation.questions.splice(questionIndex, 1)
+            organisation.save()
+                .then(updatedDoc => res.status(200).json(updatedDoc).end())
+                .catch(err => next(new ApiError("ServerError", err, 400)))
+        } else next(new ApiError('NotFound', `No Question with ID '${queID} found in Organisation '${organisation.name}'`, 404))
     }
 }
