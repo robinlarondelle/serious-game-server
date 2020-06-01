@@ -38,20 +38,19 @@ module.exports = {
     },
 
     updateDepartmentByID(req, res, next) {
-        const { orgID, depID } = req.params
+        const { depID } = req.params
+        const { organisation } = req
         const { name } = req.body
 
-        Organisation.findById(orgID).then(org => {
-            if (org !== null) {
-                Organisation.findOneAndUpdate(
-                    { "_id": orgID, "departments._id": depID },
-                    { $set: { "departments.$.name": name } },
-                    { new: true }
-                )
-                    .then(updatedDoc => res.status(200).json(updatedDoc).end())
-                    .catch(err => next(new ApiError("UpdateError", err, 400)))
-            } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
-        }).catch(err => next(new ApiError("ServerError", err, 400)))
+        if (organisation !== null) {
+            Organisation.findOneAndUpdate(
+                { "_id": organisation._id, "departments._id": depID },
+                { $set: { "departments.$.name": name } },
+                { new: true }
+            )
+                .then(updatedDoc => res.status(200).json(updatedDoc).end())
+                .catch(err => next(new ApiError("UpdateError", err, 400)))
+        } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
     },
 
     deleteDepartmentByID(req, res, next) {
