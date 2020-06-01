@@ -54,16 +54,13 @@ module.exports = {
     },
 
     deleteDepartmentByID(req, res, next) {
-        const { orgID, depID } = req.params
-
-        Organisation.findById(orgID).then(org => {
-            if (org !== null) {
-                const updatedDeps = org.departments.filter(dep => dep._id != depID)
-                org.departments = updatedDeps
-                org.save()
-                    .then(savedOrg => res.status(200).json(savedOrg).end())
-                    .catch(err => next(new ApiError("ServerError", err, 400)))
-            } else next(new ApiError("NotFound", `No Organisation found with ID '${orgID}'`, 404))
-        }).catch(err => next(new ApiError("ServerError", err, 400)))
+        const { depID } = req.params
+        const { organisation } = req
+        const newDepartments = organisation.departments.filter(dep => dep._id != depID)
+        
+        organisation.departments = newDepartments
+        organisation.save()
+            .then(savedOrg => res.status(200).json(savedOrg).end())
+            .catch(err => next(new ApiError("ServerError", err, 400)))
     }
 }
