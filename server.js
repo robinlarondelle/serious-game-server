@@ -76,5 +76,6 @@ app.use(function (err, req, res, next) {
     res.status(err.code || 500).json(err).send();
 })
 
+
 //Run server
 app.listen(port, () => console.log(`Server is running on port: ${port}`))

@@ -1,4 +1,3 @@
-const Organisation = require("../models/organisation.model")
 const Question = require("../models/question.model")
 const ApiError = require("../models/apiError.model")
 
@@ -40,9 +39,7 @@ module.exports = {
         const { queID } = req.params
         const { organisation } = req
         const { question, correctAnswer, possibleAnswers } = req.body
-        const questionIndex = organisation.questions.findIndex(q => q._id == queID)
-        console.log(questionIndex);
-        
+        const questionIndex = organisation.questions.findIndex(q => q._id == queID)       
         const updatedQuestion = new Question({ question, correctAnswer, possibleAnswers })
 
         updatedQuestion.validate(err => {
@@ -61,9 +58,7 @@ module.exports = {
     deleteQuestionFromOrganisationByID(req, res, next) {
         const { organisation } = req
         const { queID } = req.params
-
         const questionIndex = organisation.questions.findIndex(q => q._id == queID)
-        console.log(questionIndex);
         
         if (questionIndex != null) {
             organisation.questions.splice(questionIndex, 1)

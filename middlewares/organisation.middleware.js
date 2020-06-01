@@ -1,5 +1,6 @@
 const Organisation = require("../models/organisation.model")
 const ApiError = require("../models/apiError.model")
+
 module.exports = {
     findOrganisationByID(req, res, next, orgID) {
         Organisation.findById(orgID).then(org => {
