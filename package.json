@@ -28,5 +28,9 @@
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
     "yamljs": "^0.3.0"
+  },
+  "nodemonConfig": {
+    "verbose": false,
+    "ext": "yaml js json"
   }
 }
