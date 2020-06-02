@@ -10,6 +10,8 @@ const morgan = require("morgan") //HTTP request logger
 const bodyParser = require('body-parser') //Pase request body to JSON
 const cors = require("cors") // Access control
 const mongoose = require('mongoose')
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 
 //custom properties and imports
@@ -17,6 +19,8 @@ const port = process.env.PORT || "3000"
 const dbConfig = require("./config/database-config.json")
 const ApiError = require("./models/apiError.model")
 const dbBaseUrl = process.env.dbBaseUrl
+const swaggerOptions = require("./config/swagger.json")
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 
 //MongoDB database connection
@@ -36,11 +40,13 @@ mongoose.connect(databaseString, {
         process.exit()
     })
 
+
 //Server setup    
 const app = express()
 app.use(bodyParser.json())
 app.use(cors('*'))
 if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 
 //Middleware imports

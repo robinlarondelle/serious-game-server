@@ -1,0 +1,14 @@
+{
+    "swaggerDefinition": {
+        "info": {
+            "version": "1.0.0",
+            "title": "Serious Gaming Server API",
+            "description": "API docs for the Serious Gaming server",
+            "contact": {
+                "name": "Robin La Rondelle"
+            },
+            "servers": ["http://localhost:3000"]
+        }
+    },
+    "apis": ["./routes/*.js"]
+}
