@@ -21,7 +21,8 @@ const ApiError = require("./models/apiError.model")
 const dbBaseUrl = process.env.dbBaseUrl
 const swaggerDoc = YAML.load("./config/swagger.yaml")
 const swaggerOptions = {
-    explorer: true
+    explorer: true,
+    defaultModelsExpandDepth: 10
 }
 
 //MongoDB database connection
