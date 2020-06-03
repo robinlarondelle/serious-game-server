@@ -30,6 +30,10 @@ components:
         code:
           type: integer
           format: int32
+      required:
+        - error
+        - message
+        - code
 
     Answer:
       properties:
@@ -68,7 +72,7 @@ components:
       properties:
         # TODO
     
-    department:
+    Department:
       properties:
         name:
           type: string
@@ -81,19 +85,29 @@ components:
 
     Organisation:
       properties:
+        _id:
+          type: integer
+          minimum: 100000
+          maximum: 999999
         name:
           type: string
+        pin:
+          type: integer
+          minimum: 100000
+          maximum: 999999
         departments:
           type: array
           items:
-            $ref: '#/components/schemas/department'
+            $ref: '#/components/schemas/Department'
         questions:
           type: array
           items:
             $ref: '#/components/schemas/Question'
-      required:
-        - name
-
+        plays:
+          type: array
+          items:
+            $ref: '#/components/schemas/Play'
+        
 paths:
   /organisation:
     get:
@@ -112,7 +126,11 @@ paths:
     post:
       tags:
         - Organisation
-      summary: 'Get all the organisations'
+      summary: 'Add a new Organisation'
+      description: >
+        Create a new organisation. The name and the PIN of the organisation has to be unique. 
+        The PIN property in the body is optional. A real life organisation should not use this endpoint. 
+        Only the game admin should be able to create new organisations.
       tag: "Organisation"
       consumes:
       - 'application/json'
@@ -123,9 +141,28 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Organisation'
+              type: object
+              properties:
+                name:
+                  type: string
+                pin:
+                  type: integer
+                  minimum: 100000
+                  maximum: 999999
+              required:
+                - name
+            examples:
+              onlyName:
+                summary: Name only
+                description: Supply a name only and a PIN will be generated
+                value:
+                  name: HotRed Inc.
+              withPin:
+                summary: Name and PIN
+                description: Supply a PIN (optional) and, if available, that will be your PIN and ID
+                value:
+                  name: HotRed Inc.
+                  pin: 123456
       responses:
         201:
           description: Created
@@ -133,12 +170,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organisation'
+              example:
+                _id: 123456
+                name: HotRed Inc.
+                pin: 123456
+                departments: []
+                questions: []
+                plays: []
         400:
           description: Duplicate
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organisation'
+                $ref: '#/components/schemas/ApiError'
+              example:
+                error: DuplicateError
+                message: The organisation 'HotRed Inc.' already exists
+                code: 400
+        default:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+              example:
+                error: ServerError
+                message: Something went wrong. {error}
+                code: 400
 
   /organisation/{orgID}:
     get:
@@ -147,22 +205,27 @@ paths:
       summary: Get a specific Organisation
       parameters:
         - name: orgID
-          in: paths
+          in: path
           description: Organisation ID (the Organisation PIN = Organisation ID)
           required: true
           schema:
             type: integer
-            format: int32
       responses:
         200:
-          description: a Organisation object
+          description: a single 
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Organisation'
+        404: 
+          description: The Organisation with the given ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Organisation'
+                $ref: '#/components/schemas/ApiError'
