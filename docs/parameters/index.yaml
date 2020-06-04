@@ -1,0 +1,4 @@
+orgID:
+  $ref: ./orgID.yaml
+depID:
+  $ref: ./depID.yaml

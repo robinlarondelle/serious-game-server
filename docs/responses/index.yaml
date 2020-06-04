@@ -1,0 +1,6 @@
+default:
+  $ref: './default.yaml'
+404:
+  $ref: './404.yaml'
+duplicate:
+  $ref: './duplicate.yaml'

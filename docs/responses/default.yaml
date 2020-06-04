@@ -1,0 +1,9 @@
+description: Server error
+content:
+  application/json:
+    schema:
+      $ref: '#/components/schemas/ApiError'
+    example:
+      error: ServerError
+      message: Something went wrong. {error}
+      code: 400

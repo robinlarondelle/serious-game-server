@@ -18,35 +18,9 @@ components:
   schemas:
     $ref: ./schemas/index.yaml
   parameters:
-    orgID:
-      $ref: ./parameters/orgID.yaml
+    $ref: ./parameters/index.yaml
   responses:
-    default:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            error: ServerError
-            message: Something went wrong. {error}
-            code: 400
-    404:
-      description: Not Found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
-          example:
-            error: DuplicateError
-            message: The organisation 'HotRed Inc.' already exists
-            code: 400
-    duplicate:
-      description: Duplicate
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ApiError'
+    $ref: ./responses/index.yaml
     
 paths:
   /organisation:
@@ -112,10 +86,6 @@ paths:
                 plays: []
         400:
           $ref: '#/components/responses/duplicate'
-          example:
-            error: DuplicateError
-            message: The organisation 'HotRed Inc.' already exists
-            code: 400
         default:
           $ref: '#/components/responses/default'
 
