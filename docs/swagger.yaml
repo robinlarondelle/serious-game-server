@@ -20,93 +20,10 @@ basePath: '/'
 
 components:
   schemas:
-
-    ApiError:
-      properties:
-        error:
-          type: string
-        message:
-          type: string
-        code:
-          type: integer
-          format: int32
-      required:
-        - error
-        - message
-        - code
-
-    Answer:
-      properties:
-        answer:
-          type: string
-        stats:
-          type: array
-          items:
-            type: object
-            properties:
-              stat:
-                type: string
-              score:
-                type: integer
-                format: int32
-            required:
-              - stat
-              - score
-      required:
-        - answer
-        - stats
-    
-    Question:
-      properties:
-        question:
-          type: string
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Answer'
-      required:
-        - question
-        - answers
-
-    Play:
-      properties:
-        # TODO
-    
-    Department:
-      properties:
-        name:
-          type: string
-        plays:
-          type: array
-          items:
-            $ref: '#/components/schemas/Play'
-      required:
-        - name
-
-    Organisation:
-      properties:
-        _id:
-          type: integer
-          minimum: 100000
-          maximum: 999999
-        name:
-          type: string
-        pin:
-          type: integer
-          minimum: 100000
-          maximum: 999999
-        departments:
-          type: array
-          items:
-            $ref: '#/components/schemas/Department'
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Question'
-        plays:
-          type: array
-          items:
-            $ref: '#/components/schemas/Play'
+    $ref: ./schemas/index.yaml
+  parameters:
+    orgID:
+      $ref: ./parameters/orgID.yaml
         
 paths:
   /organisation:
@@ -198,18 +115,14 @@ paths:
                 message: Something went wrong. {error}
                 code: 400
 
-  /organisation/{orgID}:
+  /organisation/:orgID:
     get:
       tags:
         - Organisation
       summary: Get a specific Organisation
       parameters:
-        - name: orgID
-          in: path
-          description: Organisation ID (the Organisation PIN = Organisation ID)
-          required: true
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/orgID'
+
       responses:
         200:
           description: a single 

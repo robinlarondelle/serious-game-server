@@ -1,0 +1,698 @@
+{
+  "swagger": 2,
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Serious Game Server API",
+    "description": "This is the documentation of the Serious Game Server API. Find the repository [on github](https://github.com/robinlarondelle/serious-game-server)",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Organisation",
+      "description": "Everything about Organisation"
+    },
+    {
+      "name": "Department",
+      "description": "Everything about Departments"
+    }
+  ],
+  "host": "localhost:3000",
+  "basePath": "/",
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "error",
+          "message",
+          "code"
+        ]
+      },
+      "Answer": {
+        "type": "object",
+        "properties": {
+          "answer": {
+            "type": "string"
+          },
+          "stats": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "stat": {
+                  "type": "string"
+                },
+                "score": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              },
+              "required": [
+                "stat",
+                "score"
+              ]
+            }
+          }
+        },
+        "required": [
+          "answer",
+          "stats"
+        ]
+      },
+      "Question": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "answer": {
+                  "type": "string"
+                },
+                "stats": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "stat": {
+                        "type": "string"
+                      },
+                      "score": {
+                        "type": "integer",
+                        "format": "int32"
+                      }
+                    },
+                    "required": [
+                      "stat",
+                      "score"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "answer",
+                "stats"
+              ]
+            }
+          }
+        },
+        "required": [
+          "question",
+          "answers"
+        ]
+      },
+      "Play": {
+        "type": "object",
+        "properties": null
+      },
+      "Department": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "plays": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": null
+            }
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "Organisation": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "integer",
+            "minimum": 888888,
+            "maximum": 999999
+          },
+          "name": {
+            "type": "string"
+          },
+          "pin": {
+            "type": "integer",
+            "minimum": 100000,
+            "maximum": 999999
+          },
+          "departments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "plays": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": null
+                  }
+                }
+              },
+              "required": [
+                "name"
+              ]
+            }
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "question": {
+                  "type": "string"
+                },
+                "answers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "answer": {
+                        "type": "string"
+                      },
+                      "stats": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "stat": {
+                              "type": "string"
+                            },
+                            "score": {
+                              "type": "integer",
+                              "format": "int32"
+                            }
+                          },
+                          "required": [
+                            "stat",
+                            "score"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "answer",
+                      "stats"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "question",
+                "answers"
+              ]
+            }
+          },
+          "plays": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": null
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "pin"
+        ]
+      }
+    },
+    "parameters": {
+      "orgID": [
+        {
+          "name": "orgID",
+          "in": "path",
+          "description": "Organisation ID (the Organisation PIN = Organisation ID)",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ]
+    }
+  },
+  "paths": {
+    "/organisation": {
+      "get": {
+        "tags": [
+          "Organisation"
+        ],
+        "summary": "Get all the organisations",
+        "description": "This endpoint will get all the organisations in the dataset, Including their Departments, Questions and Players. Using this endpoint as an Organisation is not desired.\n",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organisation"
+        ],
+        "summary": "Add a new Organisation",
+        "description": "Create a new organisation. The name and the PIN of the organisation has to be unique.  The PIN property in the body is optional. A real life organisation should not use this endpoint.  Only the game admin should be able to create new organisations.\n",
+        "tag": "Organisation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "pin": {
+                    "type": "integer",
+                    "minimum": 100000,
+                    "maximum": 999999
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              },
+              "examples": {
+                "onlyName": {
+                  "summary": "Name only",
+                  "description": "Supply a name only and a PIN will be generated",
+                  "value": {
+                    "name": "HotRed Inc."
+                  }
+                },
+                "withPin": {
+                  "summary": "Name and PIN",
+                  "description": "Supply a PIN (optional) and, if available, that will be your PIN and ID",
+                  "value": {
+                    "name": "HotRed Inc.",
+                    "pin": 123456
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "integer",
+                      "minimum": 888888,
+                      "maximum": 999999
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "pin": {
+                      "type": "integer",
+                      "minimum": 100000,
+                      "maximum": 999999
+                    },
+                    "departments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "plays": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": null
+                            }
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ]
+                      }
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "answer": {
+                                  "type": "string"
+                                },
+                                "stats": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "stat": {
+                                        "type": "string"
+                                      },
+                                      "score": {
+                                        "type": "integer",
+                                        "format": "int32"
+                                      }
+                                    },
+                                    "required": [
+                                      "stat",
+                                      "score"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "answer",
+                                "stats"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "answers"
+                        ]
+                      }
+                    },
+                    "plays": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": null
+                      }
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "name",
+                    "pin"
+                  ]
+                },
+                "example": {
+                  "_id": 123456,
+                  "name": "HotRed Inc.",
+                  "pin": 123456,
+                  "departments": [],
+                  "questions": [],
+                  "plays": []
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Duplicate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message",
+                    "code"
+                  ]
+                },
+                "example": {
+                  "error": "DuplicateError",
+                  "message": "The organisation 'HotRed Inc.' already exists",
+                  "code": 400
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message",
+                    "code"
+                  ]
+                },
+                "example": {
+                  "error": "ServerError",
+                  "message": "Something went wrong. {error}",
+                  "code": 400
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/organisation/:orgID": {
+      "get": {
+        "tags": [
+          "Organisation"
+        ],
+        "summary": "Get a specific Organisation",
+        "parameters": [
+          {
+            "name": "orgID",
+            "in": "path",
+            "description": "Organisation ID (the Organisation PIN = Organisation ID)",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "a single",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "integer",
+                      "minimum": 888888,
+                      "maximum": 999999
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "pin": {
+                      "type": "integer",
+                      "minimum": 100000,
+                      "maximum": 999999
+                    },
+                    "departments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "plays": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": null
+                            }
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ]
+                      }
+                    },
+                    "questions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "question": {
+                            "type": "string"
+                          },
+                          "answers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "answer": {
+                                  "type": "string"
+                                },
+                                "stats": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "stat": {
+                                        "type": "string"
+                                      },
+                                      "score": {
+                                        "type": "integer",
+                                        "format": "int32"
+                                      }
+                                    },
+                                    "required": [
+                                      "stat",
+                                      "score"
+                                    ]
+                                  }
+                                }
+                              },
+                              "required": [
+                                "answer",
+                                "stats"
+                              ]
+                            }
+                          }
+                        },
+                        "required": [
+                          "question",
+                          "answers"
+                        ]
+                      }
+                    },
+                    "plays": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": null
+                      }
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "name",
+                    "pin"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The Organisation with the given ID was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message",
+                    "code"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "integer",
+                      "format": "int32"
+                    }
+                  },
+                  "required": [
+                    "error",
+                    "message",
+                    "code"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

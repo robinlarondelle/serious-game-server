@@ -1,0 +1,6 @@
+  name: orgID
+  in: path
+  description: Organisation ID (the Organisation PIN = Organisation ID)
+  required: true
+  schema:
+    type: integer

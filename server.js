@@ -11,7 +11,8 @@ const bodyParser = require('body-parser') //Pase request body to JSON
 const cors = require("cors") // Access control
 const mongoose = require('mongoose')
 const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs")
+const YAML = require("yaml")
+const fs = require('fs')
 
 
 //custom properties and imports
@@ -19,7 +20,7 @@ const port = process.env.PORT || "3000"
 const dbConfig = require("./config/database-config.json")
 const ApiError = require("./models/apiError.model")
 const dbBaseUrl = process.env.dbBaseUrl
-const swaggerDoc = YAML.load("./config/swagger.yaml")
+const swaggerDoc = require('./docs/ag-swagger.json') //use the auto-generated swagger doc
 const swaggerOptions = {
     explorer: true,
     defaultModelsExpandDepth: 10

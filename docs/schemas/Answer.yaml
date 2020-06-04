@@ -1,0 +1,20 @@
+type: object
+properties:
+  answer:
+    type: string
+  stats:
+    type: array
+    items:
+      type: object
+      properties:
+        stat:
+          type: string
+        score:
+          type: integer
+          format: int32
+      required:
+        - stat
+        - score
+required:
+  - answer
+  - stats

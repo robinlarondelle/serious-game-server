@@ -1,0 +1,10 @@
+type: object
+properties:
+  name:
+    type: string
+  plays:
+    type: array
+    items:
+      $ref: './Play.yaml'
+required:
+  - name

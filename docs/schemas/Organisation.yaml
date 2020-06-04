@@ -1,0 +1,28 @@
+type: object
+properties:
+  _id:
+    type: integer
+    minimum: 888888
+    maximum: 999999
+  name:
+    type: string
+  pin:
+    type: integer
+    minimum: 100000
+    maximum: 999999
+  departments:
+    type: array
+    items:
+      $ref: './Department.yaml'
+  questions:
+    type: array
+    items:
+      $ref: './Question.yaml'
+  plays:
+    type: array
+    items:
+      $ref: './Play.yaml'
+required:
+- _id
+- name
+- pin
