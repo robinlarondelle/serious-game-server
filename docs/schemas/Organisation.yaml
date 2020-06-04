@@ -18,10 +18,10 @@ properties:
     type: array
     items:
       $ref: './Question.yaml'
-  plays:
-    type: array
-    items:
-      $ref: './Play.yaml'
+  # plays:
+  #   type: array
+  #   items:
+  #     $ref: './Play.yaml'
 required:
 - _id
 - name

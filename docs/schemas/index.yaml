@@ -7,8 +7,8 @@ Answer:
 Question:
   $ref: './Question.yaml'
 
-Play:
-  $ref: './Play.yaml'
+# Play:
+#   $ref: './Play.yaml'
 
 Department:
   $ref: './Department.yaml'

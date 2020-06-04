@@ -246,17 +246,57 @@
       }
     },
     "parameters": {
-      "orgID": [
-        {
-          "name": "orgID",
-          "in": "path",
-          "description": "Organisation ID (the Organisation PIN = Organisation ID)",
-          "required": true,
-          "schema": {
-            "type": "integer"
+      "orgID": {
+        "name": "orgID",
+        "in": "path",
+        "description": "Organisation ID (the Organisation PIN = Organisation ID)",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "responses": {
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "example": {
+              "error": "DuplicateError",
+              "message": "The organisation 'HotRed Inc.' already exists",
+              "code": 400
+            }
           }
         }
-      ]
+      },
+      "default": {
+        "description": "Server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            },
+            "example": {
+              "error": "ServerError",
+              "message": "Something went wrong. {error}",
+              "code": 400
+            }
+          }
+        }
+      },
+      "duplicate": {
+        "description": "Duplicate",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      }
     }
   },
   "paths": {
@@ -335,104 +375,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "integer",
-                      "minimum": 888888,
-                      "maximum": 999999
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "pin": {
-                      "type": "integer",
-                      "minimum": 100000,
-                      "maximum": 999999
-                    },
-                    "departments": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string"
-                          },
-                          "plays": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": null
-                            }
-                          }
-                        },
-                        "required": [
-                          "name"
-                        ]
-                      }
-                    },
-                    "questions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "answer": {
-                                  "type": "string"
-                                },
-                                "stats": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                      "stat": {
-                                        "type": "string"
-                                      },
-                                      "score": {
-                                        "type": "integer",
-                                        "format": "int32"
-                                      }
-                                    },
-                                    "required": [
-                                      "stat",
-                                      "score"
-                                    ]
-                                  }
-                                }
-                              },
-                              "required": [
-                                "answer",
-                                "stats"
-                              ]
-                            }
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "answers"
-                        ]
-                      }
-                    },
-                    "plays": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": null
-                      }
-                    }
-                  },
-                  "required": [
-                    "_id",
-                    "name",
-                    "pin"
-                  ]
+                  "$ref": "#/components/schemas/Organisation"
                 },
                 "example": {
                   "_id": 123456,
@@ -446,68 +389,15 @@
             }
           },
           "400": {
-            "description": "Duplicate",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "integer",
-                      "format": "int32"
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "message",
-                    "code"
-                  ]
-                },
-                "example": {
-                  "error": "DuplicateError",
-                  "message": "The organisation 'HotRed Inc.' already exists",
-                  "code": 400
-                }
-              }
+            "$ref": "#/components/responses/duplicate",
+            "example": {
+              "error": "DuplicateError",
+              "message": "The organisation 'HotRed Inc.' already exists",
+              "code": 400
             }
           },
           "default": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "integer",
-                      "format": "int32"
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "message",
-                    "code"
-                  ]
-                },
-                "example": {
-                  "error": "ServerError",
-                  "message": "Something went wrong. {error}",
-                  "code": 400
-                }
-              }
-            }
+            "$ref": "#components/responses/default"
           }
         }
       }
@@ -520,176 +410,25 @@
         "summary": "Get a specific Organisation",
         "parameters": [
           {
-            "name": "orgID",
-            "in": "path",
-            "description": "Organisation ID (the Organisation PIN = Organisation ID)",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
+            "$ref": "#/components/parameters/orgID"
           }
         ],
         "responses": {
           "200": {
-            "description": "a single",
+            "description": "a single organisation with the given ID",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "_id": {
-                      "type": "integer",
-                      "minimum": 888888,
-                      "maximum": 999999
-                    },
-                    "name": {
-                      "type": "string"
-                    },
-                    "pin": {
-                      "type": "integer",
-                      "minimum": 100000,
-                      "maximum": 999999
-                    },
-                    "departments": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string"
-                          },
-                          "plays": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": null
-                            }
-                          }
-                        },
-                        "required": [
-                          "name"
-                        ]
-                      }
-                    },
-                    "questions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "question": {
-                            "type": "string"
-                          },
-                          "answers": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "answer": {
-                                  "type": "string"
-                                },
-                                "stats": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                      "stat": {
-                                        "type": "string"
-                                      },
-                                      "score": {
-                                        "type": "integer",
-                                        "format": "int32"
-                                      }
-                                    },
-                                    "required": [
-                                      "stat",
-                                      "score"
-                                    ]
-                                  }
-                                }
-                              },
-                              "required": [
-                                "answer",
-                                "stats"
-                              ]
-                            }
-                          }
-                        },
-                        "required": [
-                          "question",
-                          "answers"
-                        ]
-                      }
-                    },
-                    "plays": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": null
-                      }
-                    }
-                  },
-                  "required": [
-                    "_id",
-                    "name",
-                    "pin"
-                  ]
+                  "$ref": "#/components/schemas/Organisation"
                 }
               }
             }
           },
           "404": {
-            "description": "The Organisation with the given ID was not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "integer",
-                      "format": "int32"
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "message",
-                    "code"
-                  ]
-                }
-              }
-            }
+            "$ref": "#/components/responses/404"
           },
           "default": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "error": {
-                      "type": "string"
-                    },
-                    "message": {
-                      "type": "string"
-                    },
-                    "code": {
-                      "type": "integer",
-                      "format": "int32"
-                    }
-                  },
-                  "required": [
-                    "error",
-                    "message",
-                    "code"
-                  ]
-                }
-              }
-            }
+            "$ref": "#/components/responses/default"
           }
         }
       }
