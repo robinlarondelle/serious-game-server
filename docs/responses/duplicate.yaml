@@ -2,4 +2,4 @@ description: Duplicate
 content:
   application/json:
     schema:
-      $ref: '#/components/schemas/ApiError'
+      $ref: '../schemas/ApiError.yaml'

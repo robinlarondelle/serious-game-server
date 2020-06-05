@@ -1,3 +1,4 @@
+
 //Requiring the correct env files by checking NODE_ENV
 const dev = process.env.NODE_ENV == "development"
 if (dev) require('dotenv').config({ path: "./env/dev.env" })
@@ -11,7 +12,7 @@ const bodyParser = require('body-parser') //Pase request body to JSON
 const cors = require("cors") // Access control
 const mongoose = require('mongoose')
 const swaggerUi = require("swagger-ui-express");
-const { exec } = require('child_process');
+const swaggerDoc = require("./docs/ag-swagger.json")
 
 
 //custom properties and imports
@@ -19,7 +20,6 @@ const port = process.env.PORT || "3000"
 const dbConfig = require("./config/database-config.json")
 const ApiError = require("./models/apiError.model")
 const dbBaseUrl = process.env.dbBaseUrl
-const swaggerDoc = require('./docs/ag-swagger.json') //use the auto-generated swagger doc
 const swaggerOptions = {
     explorer: true,
     defaultModelsExpandDepth: 10
@@ -47,16 +47,8 @@ mongoose.connect(databaseString, {
 const app = express()
 app.use(bodyParser.json())
 app.use(cors('*'))
-if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
-
-exec("swagger-ui-watcher --bundle=./docs/ag-swagger.json ./docs/swagger.yaml", (error) => {
-
-    if (error) {
-        console.log(error);
-        return
-    }
-    app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
-})
+if (dev) app.use(morgan("dev")) //dont show all logs when in production mode      
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
 
 
 //Middleware imports

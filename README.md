@@ -7,9 +7,11 @@ Make sure to run `npm i` and `npm i -g concurrently` to install all dependencies
 ## Documentation
 To document this API, we use Swagger. All the files for the Swagger doc are in the 'Docs' folder. Because of a known bug in Swagger v3, [which renderes multifile swagger docs useless because relative referencing is broken](https://github.com/swagger-api/swagger-editor/issues/1409), we use a auto-generated (ag) swagger JSON file, based on the swagger.yaml.
 
-The package we use to develop our Swagger Docs is swagger-ui-watcher. All this package does is watch your YAML Swagger files for updates and update the UI accordingly, which makes developing the docs easier. `npm start` opens a new window of the docs on startup. If you don't want the docs or don't need to edit these docs, remove `"watch-swagger-ui": "swagger-ui-watcher ./docs/swagger.yaml"` from the package.json.
+The package we use to develop our Swagger Docs is swagger-ui-watcher. All this package does is watch your YAML Swagger files for updates and update the UI accordingly, which makes developing the docs easier.
 
-The docs can be found under `/docs`.
+If you want to update the swagger docs, run `npm run update-docs` command. This will open a new browser window with the swagger docs which will get updated immediately if the .yaml files are updated.
+
+The docs can be found under `/docs`. If you have edited the Swagger docs, *make sure to update them by running the `swagger-ui-watcher --build=./docs/ag-swagger.json ./docs/swagger.yaml` command in a separate terminal.
 
 ## Project Contributors
 This project is a collaboration between 6 students for a school assignment

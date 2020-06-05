@@ -4,8 +4,10 @@
   "description": "The Node.js server for the Serious Game Project",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm:watch-*\"",
-    "watch-nodemon": "SET NODE_ENV=development& nodemon server.js"
+    "update-docs": "concurrently \"npm:watch-*\"",
+    "watch-nodemon": "SET NODE_ENV=development& nodemon server.js",
+    "watch-swagger-ui": "swagger-ui-watcher ./docs/swagger.yaml",
+    "start": "SET NODE_ENV=development& nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +20,9 @@
   },
   "homepage": "https://github.com/robinlarondelle/serious-game-server#readme",
   "dependencies": {
+    "@apidevtools/swagger-parser": "^9.0.1",
     "body-parser": "^1.19.0",
+    "concurrent": "^0.3.2",
     "concurrently": "^5.2.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -35,6 +39,8 @@
   "nodemonConfig": {
     "verbose": false,
     "ext": "yaml js json",
-    "ignore": ["./docs/*"]
+    "ignore": [
+      "./docs/ag-swagger.json"
+    ]
   }
 }

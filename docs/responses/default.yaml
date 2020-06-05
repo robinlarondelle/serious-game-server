@@ -2,7 +2,7 @@ description: Server error
 content:
   application/json:
     schema:
-      $ref: '#/components/schemas/ApiError'
+      $ref: '../schemas/ApiError.yaml'
     example:
       error: ServerError
       message: Something went wrong. {error}
