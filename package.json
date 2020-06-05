@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm:watch-*\"",
-    "watch-swagger-ag": "swagger-ui-watcher --bundle=./docs/ag-swagger.json ./docs/swagger.yaml",
-    "watch-nodemon": "SET NODE_ENV=development& nodemon server.js",
-    "watch-swagger-ui": "swagger-ui-watcher ./docs/swagger.yaml"
+    "watch-nodemon": "SET NODE_ENV=development& nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +34,7 @@
   },
   "nodemonConfig": {
     "verbose": false,
-    "ext": "yaml js json"
+    "ext": "yaml js json",
+    "ignore": ["./docs/*"]
   }
 }

@@ -1,5 +1,7 @@
 type: object
 properties:
+  _id: 
+    type: integer
   name:
     type: string
   # plays:
@@ -8,3 +10,4 @@ properties:
   #     $ref: './Play.yaml'
 required:
   - name
+  - _id

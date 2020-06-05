@@ -28,9 +28,9 @@ module.exports = {
                 if (!dups) { //check for duplicate names in the Departments list
                     organisation.departments.push(newDepartment)
                     organisation.save()
-                        .then(() => res.status(201).json(newDepartment).end())
+                        .then((org) => res.status(201).json(org).end())
                         .catch(err => next(new ApiError("ServerError", err, 400)))
-                } else next(new ApiError("DuplicateError", `There already exists an Department with name '${newDepartment.name}' in Organisation '${orgID}'`, 400))
+                } else next(new ApiError("DuplicateError", `There already exists an Department with name '${newDepartment.name}' in Organisation '${organisation.orgID}'`, 400))
             } else next(new ApiError("ValidationError", error, 400))
         })
     },

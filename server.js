@@ -11,8 +11,7 @@ const bodyParser = require('body-parser') //Pase request body to JSON
 const cors = require("cors") // Access control
 const mongoose = require('mongoose')
 const swaggerUi = require("swagger-ui-express");
-const YAML = require("yaml")
-const fs = require('fs')
+const { exec } = require('child_process');
 
 
 //custom properties and imports
@@ -49,7 +48,15 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors('*'))
 if (dev) app.use(morgan("dev")) //dont show all logs when in production mode
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
+
+exec("swagger-ui-watcher --bundle=./docs/ag-swagger.json ./docs/swagger.yaml", (error) => {
+
+    if (error) {
+        console.log(error);
+        return
+    }
+    app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
+})
 
 
 //Middleware imports

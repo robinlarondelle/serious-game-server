@@ -2,7 +2,7 @@ type: object
 properties:
   _id:
     type: integer
-    minimum: 888888
+    minimum: 100000
     maximum: 999999
   name:
     type: string
