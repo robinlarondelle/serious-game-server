@@ -11,7 +11,7 @@ The package we use to develop our Swagger Docs is swagger-ui-watcher. All this p
 
 If you want to update the swagger docs, run `npm run update-docs` command. This will open a new browser window with the swagger docs which will get updated immediately if the .yaml files are updated.
 
-The docs can be found under `/docs`. If you have edited the Swagger docs, *make sure to update them by running the `swagger-ui-watcher --build=./docs/ag-swagger.json ./docs/swagger.yaml` command in a separate terminal.
+The docs can be found under `/docs`. If you have edited the Swagger docs, *make sure to update them by running the `swagger-ui-watcher --bundle=./docs/ag-swagger.json ./docs/swagger.yaml` command in a separate terminal.
 
 ## Project Contributors
 This project is a collaboration between 6 students for a school assignment
