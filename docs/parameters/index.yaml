@@ -2,3 +2,5 @@ orgID:
   $ref: ./orgID.yaml
 depID:
   $ref: ./depID.yaml
+queID:
+  $ref: ./queID.yaml

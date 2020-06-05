@@ -13,6 +13,8 @@ tags:
   description: 'Everything about Organisation'
 - name: 'Department'
   description: 'A Department is a subdivision of a Organisation'
+- name: 'Question'
+  description: All the questions that belong to an Organisation
 
 components:
   schemas:
@@ -229,6 +231,159 @@ paths:
       parameters:
       - $ref: '#/components/parameters/orgID'
       - $ref: '#/components/parameters/depID'
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+  /organisation/:orgID/question:
+    get:
+      tags:
+      - Question
+      summary: Get all Questions from the given Organisation
+      parameters: 
+      - $ref: '#/components/parameters/orgID'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+    post:
+      tags:
+      - Question
+      summary: Add a new question to the given Organisation
+      description: >
+        Add a new Question to a organisation. The Question-Awnsers pairs need to be unique
+      parameters:
+      - $ref: '#/components/parameters/orgID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+            example:
+              question: Someone offers you a bribe. What do you do?
+              answers: 
+                - answer: Take the money and save his number for further inquiries
+                  stats:
+                     integrity: -10
+                     loyalty: 5
+                     trustworthy: -5
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organisation'
+              example:
+                _id: 123456
+                name: HotRed Inc.
+                pin: 123456
+                departments: []
+                questions:
+                  - question: Someone offers you a bribe. What do you do?
+                    answers:
+                      - answer: Take the money and save his number for further inquiries
+                        stats:
+                        - integrity: -10
+                        - loyalty: 5
+                        - trustworthy: -5
+                plays: []
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+  /organisation/:orgID/question/:queID:
+    get:
+      tags:
+      - Question
+      summary: Gets the question with the given ID
+      parameters:
+      - $ref: '#/components/parameters/orgID'
+      - $ref: '#/components/parameters/queID'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+              example:
+                question: Someone offers you a bribe. What do you do?
+                answers:
+                  - answer: Take the money and save his number for further inquiries
+                    stats:
+                    - integrity: -10
+                    - loyalty: 5
+                    - trustworthy: -5
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+    put:
+      tags:
+      - Question
+      summary: Updates the question with the given ID
+      description: >
+        Update a Question with the given ID of an organisation. If successfull, returns the complete organisation with the updated questions
+      parameters:
+      - $ref: '#/components/parameters/orgID'
+      - $ref: '#/components/parameters/queID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+            example:
+              question: Someone offers you a cookie. What do you do?
+              answers:
+                - answer: Take the money and save his number for further inquiries
+                  stats:
+                  - integrity: -10
+                  - loyalty: 5
+                  - trustworthy: -5
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+    delete:
+      tags:
+      - Question
+      summary: Deletes the question with the given ID
+      description: >
+        Deletes a question with the given ID of an organisation. If successfull, returns the complete organisation with the updated questions
+      parameters:
+      - $ref: '#/components/parameters/orgID'
+      - $ref: '#/components/parameters/queID'
       responses:
         200:
           description: OK

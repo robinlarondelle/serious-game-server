@@ -1,0 +1,6 @@
+name: queID
+in: path
+description: Question ID
+required: true
+schema:
+  type: integer
