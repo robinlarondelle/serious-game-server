@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const Player = require("./player.model")
+const Play = require("../models/play.model")
 
 const Department = mongoose.Schema({
     name: {
@@ -8,7 +8,7 @@ const Department = mongoose.Schema({
         maxlength: [30, 'Max 30 chars allowed for the Department name'],
         required: [true, 'The department name is required']
     },
-    players: [Player.schema]
+    plays: [Play.schema]
 }, {
     versionKey: false
 })

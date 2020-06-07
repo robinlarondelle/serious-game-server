@@ -19,11 +19,9 @@ const Organisation = mongoose.Schema({
         max: [999999, "The PIN needs to be a maximum of 99999"],
     },
     departments: [Department.schema],
-    questions: [Question.schema]
+    questions: [Question.schema],
 }, {
     versionKey: false
 })
-
-Organisation.virtual('orgID').get(function() { return this._id; });
 
 module.exports = mongoose.model("organisation", Organisation)
