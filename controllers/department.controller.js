@@ -9,12 +9,8 @@ module.exports = {
     },
 
     getDepartmentByID(req, res, next) {
-        const { depID } = req.params
-        const { organisation } = req
-        const dep = organisation.departments.find(dep => dep._id == depID)
-
-        if (dep) res.status(200).json(dep).end()
-        else next(new ApiError("NotFound", `No Department with ID '${depID}' found`, 400))
+        const dep = req.department
+        res.status(200).json(dep).end()
     },
 
     addDepartment(req, res, next) {
