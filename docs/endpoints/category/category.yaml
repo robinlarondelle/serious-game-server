@@ -1,0 +1,49 @@
+get:
+  tags:
+  - Category
+  summary: Get all the categories
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
+    default:
+      $ref: '#/components/responses/default'
+
+post:
+  tags:
+  - Category
+  summary: Add a new category
+  description: >
+    This endpoint will add a new category to the server.
+    The name of the category has to be unique, otherwise there will be a Duplicate Error
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Category'
+        example:
+          name: Integrity
+  responses:
+    201:
+      description: Created
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
+          example:
+            - _id: 5j4k3l234ujklhjk234h5jk
+              name: Integrity
+            - _id: 5h4j32h5jk34h52543gf434
+              name: Humanity
+    Duplicate:
+      $ref: '#/components/responses/duplicate'
+    Default:
+      $ref: '#/components/responses/default'

@@ -1,8 +1,10 @@
-orgID:
-  $ref: ./orgID.yaml
-depID:
-  $ref: ./depID.yaml
-queID:
-  $ref: ./queID.yaml
-playID:
-  $ref: ./playID.yaml
+# orgID:
+#   $ref: ./orgID.yaml
+# depID:
+#   $ref: ./depID.yaml
+# queID:
+#   $ref: ./queID.yaml
+# playID:
+#   $ref: ./playID.yaml
+catID:
+  $ref: ./catID.yaml

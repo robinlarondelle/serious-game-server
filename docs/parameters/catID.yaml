@@ -1,0 +1,6 @@
+name: catID
+in: path
+description: Category ID
+required: true
+schema:
+  type: integer

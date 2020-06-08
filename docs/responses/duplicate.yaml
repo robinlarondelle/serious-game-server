@@ -3,3 +3,7 @@ content:
   application/json:
     schema:
       $ref: '../schemas/ApiError.yaml'
+    example:
+      error: DuplicateError
+      message: '{error message}'
+      code: 400

@@ -1,17 +1,20 @@
 ApiError:
   $ref: './ApiError.yaml'
 
-Answer:
-  $ref: './Answer.yaml'
+# Answer:
+#   $ref: './Answer.yaml'
 
-Question:
-  $ref: './Question.yaml'
+# Question:
+#   $ref: './Question.yaml'
 
-Play:
-  $ref: './Play.yaml'
+# Play:
+#   $ref: './Play.yaml'
 
-Department:
-  $ref: './Department.yaml'
+# Department:
+#   $ref: './Department.yaml'
 
-Organisation:
-  $ref: './Organisation.yaml'
+# Organisation:
+#   $ref: './Organisation.yaml'
+
+Category:
+  $ref: ./Category.yaml

@@ -9,14 +9,13 @@ servers:
   - url: 'http://localhost:3000/'
 
 tags:
-- name: 'Organisation'
-  description: 'Everything about Organisation'
-- name: 'Department'
-  description: 'A Department is a subdivision of a Organisation'
-- name: 'Play'
-  description: 'A play is a single game a user plays, which is saved per Department'
-- name: 'Question'
-  description: All the questions that belong to an Organisation
+- name: Game
+  description: A game is a playable instance of a game session. It holds the questions of a game and the specified categories that belong to those questions
+- name: Play
+  description: A play is a recorded session of a player, which holds the answers to questions and builds up a user profile over time
+- name: Category
+  description: A category is a property of a player. Questions can increase or decrease the users performance in one of the categories
+
 
 components:
   schemas:
@@ -27,26 +26,17 @@ components:
     $ref: ./responses/index.yaml
     
 paths:
-  /organisation:
-    $ref: ./endpoints/organisation/organisation.yaml
+  # /game:
+  #   $ref: ./endpoints/game/game.yaml
 
-  /organisation/:orgID:
-    $ref: ./endpoints/organisation/organisation.-orgID.yaml
+  # /game/:gameID:
+  #   $ref: ./endpoints/game/game.-gameID.yaml
 
-  /organisation/:orgID/department:
-    $ref: ./endpoints/department/organisation.-orgID.department.yaml
+  /category:
+    $ref: ./endpoints/category/category.yaml
 
-  /organisation/:orgID/department/:depID:
-    $ref: ./endpoints/department/organisation.-orgID.department.-depID.yaml
-
-  /organisation/:orgID/department/:depID/play:
-    $ref: ./endpoints/play/organisation.-orgID.department.-depID.play.yaml
-
-  /organisation/:orgID/department/:depID/play/:playID:
-    $ref: ./endpoints/play/organisation.-orgID.department.-depID.play.-playID.yaml
-
-  /organisation/:orgID/question:
-    $ref: ./endpoints/question/organisation.-orgID.question.yaml
-
-  /organisation/:orgID/question/:queID:
-    $ref: ./endpoints/question/organisation.-orgID.question.-queID.yaml
+  # /category/:catID:
+  #   $ref: ./endpoints/category/category.-catID.yaml
+  
+  # /plays:
+  #   $ref: ./endpoints/plays/plays.yaml
