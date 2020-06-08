@@ -72,9 +72,9 @@ const gameRoute = require("./routes/game.route")
 
 //Route Handlers
 app.use("/game", gameRoute)
+app.use("/play", playRoute)
 app.use("/organisation", organisationRoute)
 app.use("/organisation/:orgID/department", departmentRoute)
-app.use("/organisation/:orgID/department/:depID/play", playRoute)
 app.use("/organisation/:orgID/question", questionRoute)
 
 
