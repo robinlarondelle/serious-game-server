@@ -1,9 +1,7 @@
 const routes = require('express').Router();
-const PlaysController = require("../controllers/plays.controller")
+const PlaysController = require("../controllers/play.controller")
 
-routes.get("/", PlaysController.getAllPlaysFromDepartment)
-routes.get("/:playID", PlaysController.getPlayByIDFromDepartment)
-routes.post("/", PlaysController.addPlayToDepartment)
-routes.delete("/:playID", PlaysController.deletePlayFromDepartment)
+routes.post("/:playID", PlaysController.startNewGame)
+routes.put("/:playID", PlaysController.insertAnswers)
 
 module.exports = routes

@@ -50,17 +50,6 @@ app.use(cors('*'))
 if (dev) app.use(morgan("dev")) //dont show all logs when in production mode      
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
 
-
-//Middleware imports
-const organisationMiddleware = require("./middlewares/organisation.middleware")
-const departmentMiddleware = require("./middlewares/department.middleware")
-
-
-//Middleware handlers
-app.param('orgID', organisationMiddleware.findOrganisationByID)
-app.param('depID', departmentMiddleware.findDepartmentByID)
-
-
 //Routes imports
 const organisationRoute = require("./routes/organisation.route")
 const departmentRoute = require("./routes/department.route")
@@ -69,9 +58,9 @@ const playRoute = require("./routes/play.route")
 
 
 //Route Handlers
+app.use("/play", playRoute)
 app.use("/organisation", organisationRoute)
 app.use("/organisation/:orgID/department", departmentRoute)
-app.use("/organisation/:orgID/department/:depID/play", playRoute)
 app.use("/organisation/:orgID/question", questionRoute)
 
 
