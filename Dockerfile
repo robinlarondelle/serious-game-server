@@ -18,7 +18,7 @@ RUN npm install
 # when we make a change in the code
 
 # This command tells Docker to copy ALL the source files to the workdirectory
-COPY ./support-service/. .
+COPY . .
 
 # Set the environment variables for our application
 ENV NODE_ENV=development PORT=3000
