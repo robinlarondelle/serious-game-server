@@ -8,7 +8,7 @@ const Play = new Schema({
         required: true,
         default: false
     },
-    game: {
+    pin: {
         type: Number,
         required: true
     },
