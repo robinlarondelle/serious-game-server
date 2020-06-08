@@ -4,3 +4,5 @@ depID:
   $ref: ./depID.yaml
 queID:
   $ref: ./queID.yaml
+playID:
+  $ref: ./playID.yaml

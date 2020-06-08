@@ -39,9 +39,14 @@ paths:
   /organisation/:orgID/department/:depID:
     $ref: ./endpoints/department/organisation.-orgID.department.-depID.yaml
 
+  /organisation/:orgID/department/:depID/play:
+    $ref: ./endpoints/play/organisation.-orgID.department.-depID.play.yaml
+
+  /organisation/:orgID/department/:depID/play/:playID:
+    $ref: ./endpoints/play/organisation.-orgID.department.-depID.play.-playID.yaml
+
   /organisation/:orgID/question:
     $ref: ./endpoints/question/organisation.-orgID.question.yaml
 
   /organisation/:orgID/question/:queID:
     $ref: ./endpoints/question/organisation.-orgID.question.-queID.yaml
-    

@@ -1,0 +1,43 @@
+get:
+  tags: 
+  - Play
+  summary: Get all the Plays from a department
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Play'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+post:
+  tags: 
+  - Play
+  summary: Add a new Play to a Department
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Play'
+  responses:
+    201:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Play'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

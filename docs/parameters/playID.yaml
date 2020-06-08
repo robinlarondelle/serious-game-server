@@ -1,0 +1,6 @@
+name: playID
+in: path
+description: Play ID
+required: true
+schema:
+  type: integer

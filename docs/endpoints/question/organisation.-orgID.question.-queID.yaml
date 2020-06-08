@@ -48,17 +48,17 @@ put:
               - integrity: -10
               - loyalty: 5
               - trustworthy: -5
-      responses:
-        200:
-          description: OK
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Question'
-        404:
-          $ref: '#/components/responses/404'
-        default:
-          $ref: '#/components/responses/default'
+  responses:
+    200:
+      description: OK
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Question'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
 
 delete:
   tags:

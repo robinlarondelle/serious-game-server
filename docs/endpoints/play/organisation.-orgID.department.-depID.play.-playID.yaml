@@ -1,0 +1,39 @@
+get:
+  tags:
+  - Play
+  summary: something
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  - $ref: '#/components/parameters/playID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Play'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+delete:
+  tags:
+  - Play
+  summary: something
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  - $ref: '#/components/parameters/playID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Play'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

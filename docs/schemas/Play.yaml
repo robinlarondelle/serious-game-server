@@ -1,3 +1,26 @@
-# type: object
-# properties:
-#   # TODO
+type: object
+properties:
+  date:
+    type: string
+    format: date
+  results:
+    type: array
+    items:
+      type: object
+      properties:
+        question:
+          type: string
+        answer:
+          type: string
+        answerStats:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: integer
+      required:
+      - question
+      - answer
+      - answerStats
+required:
+- results
