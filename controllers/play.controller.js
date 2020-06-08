@@ -61,9 +61,9 @@ module.exports = {
             { _id: playID }, 
             { $push: { results: levelAnswers }
         }).then(() => {
-            let dictionary = {}
             if (level == 3) {
-                //The last level has been played, therefore the game is finished
+                let dictionary = {}
+                //Aggregate all deltaScores
                 Play.findById({ _id : playID }).then(result => {
                     for (levelAnswers of result.results) {
                         for (answer of levelAnswers.questions) {
@@ -76,8 +76,23 @@ module.exports = {
                             }
                         }
                     }
-                    //Return the aggregated results per category (to generate a heatmap or whatever)
-                    res.status(200).json(dictionary).end();
+                })
+
+                //Put all scores in the play session
+                for (category of dictionary) {
+                    Play.findOneAndUpdate({ _id: playId}, {
+                        $push: { score: {
+                                category: category,
+                                score: dictionary[category]
+                            } 
+                        }
+                    })
+                }
+
+                //Set the finished state to true and return it for analysis
+                Play.findOneAndUpdate({ _id: playId}, 
+                    { finished : true }).then(result => {
+                        res.status(200).json(result).end();
                 })
             } else {
                 Game.find({ level: level+1 }).then(result => {
