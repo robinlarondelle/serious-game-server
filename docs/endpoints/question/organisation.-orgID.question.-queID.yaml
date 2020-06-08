@@ -1,0 +1,82 @@
+get:
+  tags:
+  - Question
+  summary: Gets the question with the given ID
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/queID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Question'
+          example:
+            question: Someone offers you a bribe. What do you do?
+            answers:
+              - answer: Take the money and save his number for further inquiries
+                stats:
+                - integrity: -10
+                - loyalty: 5
+                - trustworthy: -5
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+put:
+  tags:
+  - Question
+  summary: Updates the question with the given ID
+  description: >
+    Update a Question with the given ID of an organisation. If successfull, returns the complete organisation with the updated questions
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/queID'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Question'
+        example:
+          question: Someone offers you a cookie. What do you do?
+          answers:
+            - answer: Take the money and save his number for further inquiries
+              stats:
+              - integrity: -10
+              - loyalty: 5
+              - trustworthy: -5
+      responses:
+        200:
+          description: OK
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        404:
+          $ref: '#/components/responses/404'
+        default:
+          $ref: '#/components/responses/default'
+
+delete:
+  tags:
+  - Question
+  summary: Deletes the question with the given ID
+  description: >
+    Deletes a question with the given ID of an organisation. If successfull, returns the complete organisation with the updated questions
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/queID'
+  responses:
+    200:
+      description: OK
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

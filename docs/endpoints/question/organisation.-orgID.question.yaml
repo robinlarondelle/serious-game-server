@@ -1,0 +1,67 @@
+get:
+  tags:
+  - Question
+  summary: Get all Questions from the given Organisation
+  parameters: 
+  - $ref: '#/components/parameters/orgID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Question'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+post:
+  tags:
+  - Question
+  summary: Add a new question to the given Organisation
+  description: >
+    Add a new Question to a organisation. The Question-Awnsers pairs need to be unique
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Question'
+        example:
+          question: Someone offers you a bribe. What do you do?
+          answers: 
+            - answer: Take the money and save his number for further inquiries
+              stats:
+                  integrity: -10
+                  loyalty: 5
+                  trustworthy: -5
+  responses:
+    201:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+          example:
+            _id: 123456
+            name: HotRed Inc.
+            pin: 123456
+            departments: []
+            questions:
+              - question: Someone offers you a bribe. What do you do?
+                answers:
+                  - answer: Take the money and save his number for further inquiries
+                    stats:
+                    - integrity: -10
+                    - loyalty: 5
+                    - trustworthy: -5
+            plays: []
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

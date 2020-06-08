@@ -1,0 +1,71 @@
+get:
+  tags:
+  - Department
+  summary: Gets the department with the given ID
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Department'
+          example:
+            _id: 32fdas89a3r
+            name: IT department
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+put:
+  tags:
+  - Department
+  summary: Updates the department with the given ID
+  description: >
+    Update a department with the given ID of an organisation. If successfull, returns the complete organisation with the updated departments
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Department'
+        example:
+          name: Marketing department
+  responses:
+    200:
+      description: OK
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+delete:
+  tags:
+  - Department
+  summary: Deletes the department with the given ID
+  description: >
+    Deletes a department with the given ID of an organisation. If successfull, returns the complete organisation with the updated departments
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  - $ref: '#/components/parameters/depID'
+  responses:
+    200:
+      description: OK
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

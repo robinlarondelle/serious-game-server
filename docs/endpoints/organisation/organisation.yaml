@@ -1,0 +1,64 @@
+get:
+  tags:
+    - Organisation
+  summary: Get all the organisations
+  description: >
+    This endpoint will get all the organisations in the dataset, Including their
+    Departments, Questions and Players. Using this endpoint as an Organisation is not desired.
+  responses:
+    200:
+      description: OK
+
+post:
+  tags:
+    - Organisation
+  summary: 'Add a new Organisation'
+  description: >
+    Create a new organisation. The name and the PIN of the organisation has to be unique. 
+    The PIN property in the body is optional. A real life organisation should not use this endpoint. 
+    Only the game admin should be able to create new organisations.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            pin:
+              type: integer
+              minimum: 100000
+              maximum: 999999
+          required:
+            - name
+        examples:
+          onlyName:
+            summary: Name only
+            description: Supply a name only and a PIN will be generated
+            value:
+              name: HotRed Inc.
+          withPin:
+            summary: Name and PIN
+            description: Supply a PIN (optional) and, if available, that will be your PIN and ID
+            value:
+              name: HotRed Inc.
+              pin: 123456
+  responses:
+    201:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+          example:
+            _id: 123456
+            name: HotRed Inc.
+            pin: 123456
+            departments: []
+            questions: []
+            plays: []
+    400:
+      $ref: '#/components/responses/duplicate'
+    default:
+      $ref: '#/components/responses/default'

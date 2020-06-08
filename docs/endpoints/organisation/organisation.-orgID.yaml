@@ -1,0 +1,19 @@
+get:
+  tags:
+    - Organisation
+  summary: Get a specific Organisation
+  description: a single organisation with the given ID
+  parameters:
+    - $ref: '#/components/parameters/orgID'
+
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'

@@ -1,0 +1,56 @@
+get:
+  tags:
+  - Department
+  summary: Get all departments from the given Organisation
+  parameters: 
+  - $ref: '#/components/parameters/orgID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Department'
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+
+post:
+  tags:
+  - Department
+  summary: Add a new department to the given Organisation
+  description: >
+    Add a new department to a organisation. It's important that the department name is unique.
+  parameters:
+  - $ref: '#/components/parameters/orgID'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Department'
+        example:
+          name: IT department
+  responses:
+    201:
+      description: Created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Organisation'
+          example:
+            _id: 123456
+            name: HotRed Inc.
+            pin: 123456
+            departments: [
+              \your created department here\
+            ]
+            questions: []
+            plays: []
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
