@@ -62,10 +62,13 @@ app.param('gameID', gameMiddleware.findGameByID)
 //Routes imports
 const playRoute = require("./routes/play.route")
 const gameRoute = require("./routes/game.route")
+const categoryRoute = require("./routes/category.route")
+
 
 //Route Handlers
 app.use("/game", gameRoute)
 app.use("/play", playRoute)
+app.use("/category", categoryRoute)
 
 
 //Catch all non existing endpoints
