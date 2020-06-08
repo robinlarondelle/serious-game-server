@@ -54,11 +54,13 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc, swaggerOptions));
 //Middleware imports
 const organisationMiddleware = require("./middlewares/organisation.middleware")
 const departmentMiddleware = require("./middlewares/department.middleware")
+const gameMiddleware = require("./middlewares/game.middleware")
 
 
 //Middleware handlers
 app.param('orgID', organisationMiddleware.findOrganisationByID)
 app.param('depID', departmentMiddleware.findDepartmentByID)
+app.param('gameID', gameMiddleware.findGameByID)
 
 
 //Routes imports
@@ -66,9 +68,10 @@ const organisationRoute = require("./routes/organisation.route")
 const departmentRoute = require("./routes/department.route")
 const questionRoute = require("./routes/question.route")
 const playRoute = require("./routes/play.route")
-
+const gameRoute = require("./routes/game.route")
 
 //Route Handlers
+app.use("/game", gameRoute)
 app.use("/organisation", organisationRoute)
 app.use("/organisation/:orgID/department", departmentRoute)
 app.use("/organisation/:orgID/department/:depID/play", playRoute)
