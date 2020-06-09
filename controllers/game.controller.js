@@ -1,6 +1,5 @@
 const ApiError = require("../models/apiError.model")
 const Game = require("../models/game.model")
-const Question = require("../models/question.model")
 
 module.exports = {
     getAllGames(req, res, next) {
@@ -41,7 +40,7 @@ module.exports = {
 
     deleteGameByID(req, res, next) {
         Game.findOneAndDelete(req.game)
-            .then(removedDoc => res.status(200).json({ "message": "success" }).end())
+            .then(() => res.status(200).json({ "message": "success" }).end())
             .catch(err => next(new ApiError("ServerError", err, 400)))
     }
 }
