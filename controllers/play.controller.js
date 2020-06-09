@@ -3,6 +3,7 @@ const ApiError = require("../models/apiError.model")
 const Play = require("../models/play.model") 
 const Game = require("../models/game.model")
 const LevelAnswers = require("../models/level.answers.model")
+const Category = require("../models/category.model")
 
 module.exports = {
     //Method for starting a new play from a game
@@ -42,10 +43,31 @@ module.exports = {
                     if (req.body.level == 3) {
                         //Aggregates the results and returns them
                         aggregateData(play, (result) => {
-                            play.scores.push({
-                                
-                            })
-                            res.status(200).json(result).end();
+                            let i = 0;
+                            play.finished = true
+                            for (let [key, value] of Object.entries(result)) {
+                                play.scores.push({
+                                    category: key,
+                                    score: value
+                                })
+                                i++;
+                                if (i == Object.keys(result).length) {
+                                    let map = {}
+                                    let j = 0
+                                    for (let key of Object.keys(result)) {
+                                        Category.findById(key).then(cat => {
+                                            console.log(cat)
+                                            map[cat.name] = result[key]
+                                        })
+                                        j++;
+                                        if (i == Object.keys(result).length) {
+                                            play.save().then(() => {
+                                                res.status(200).json(map).end()
+                                            })
+                                        }
+                                    }     
+                                }
+                            }
                         })
                     } else {
                         //Gets the next level and returns it
