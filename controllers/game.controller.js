@@ -39,7 +39,7 @@ module.exports = {
     },
 
     deleteGameByID(req, res, next) {
-        Game.findOneAndDelete(req.game)
+        Game.findOneAndDelete(req.game._id)
             .then(() => res.status(200).json({ "message": "success" }).end())
             .catch(err => next(new ApiError("ServerError", err, 400)))
     }
