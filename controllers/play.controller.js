@@ -124,13 +124,24 @@ function getMetaData(question, answer, playID, callback) {
 
 //Function for getting the questions from one level
 function getLevel(pin, level, playID, callback) {
-    Game.findById(pin, {_id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0, 'questions.level': 0 })
-    .select({questions: {$elemMatch: {level: level}}})
+    Game.findById(pin, {_id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0, '__v': 0, 'createdAt': 0, 'updatedAt': 0, 'totalPlays': 0, 'description': 0 })
     .then(result => {
         result = result.toObject()
-        result['gameID'] = playID
-        result['level'] = level
-        callback(result)
+        let list = Array();
+        let i = 0
+        for (question of result.questions) {
+            if (question.level == level) {
+                delete question.level
+                list.push(question)
+            }
+            i++
+            if (i == result.questions.length) {
+                result.questions = list
+                result['gameID'] = playID
+                result['level'] = level
+                callback(result)
+            }
+        }
     })
 }
 
