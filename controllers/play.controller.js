@@ -119,6 +119,7 @@ function getMetaData(question, answer, playID, callback) {
     })
 }
 
+//Function for getting the questions from one level
 function getLevel(pin, level, playID, callback) {
     Game.findById(pin, {_id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0, 'questions.level': 0 })
     .select({questions: {$elemMatch: {level: level}}})
@@ -130,6 +131,7 @@ function getLevel(pin, level, playID, callback) {
     })
 }
 
+//Function for aggregating all results from one play
 function aggregateData(play, callback) {
     let map = {}
     let i = 0;
@@ -142,6 +144,7 @@ function aggregateData(play, callback) {
         })
     }
 
+    //Function for aggregating all results from one level
     function aggregateLevel(level, callback) {
         let i = 0;
         for (answer of level.questions) {
