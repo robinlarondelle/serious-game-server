@@ -16,7 +16,6 @@ const Game = mongoose.Schema({
         required: false
     }
 }, {
-    versionKey: true,
     timestamps: true,
 })
 
