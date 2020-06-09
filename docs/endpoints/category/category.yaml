@@ -43,7 +43,7 @@ post:
               name: Integrity
             - _id: 5h4j32h5jk34h52543gf434
               name: Humanity
-    Duplicate:
+    400:
       $ref: '#/components/responses/duplicate'
-    Default:
+    default:
       $ref: '#/components/responses/default'

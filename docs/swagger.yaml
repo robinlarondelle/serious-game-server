@@ -35,8 +35,8 @@ paths:
   /category:
     $ref: ./endpoints/category/category.yaml
 
-  # /category/:catID:
-  #   $ref: ./endpoints/category/category.-catID.yaml
+  /category/:catID:
+    $ref: ./endpoints/category/category.-catID.yaml
   
   # /plays:
   #   $ref: ./endpoints/plays/plays.yaml

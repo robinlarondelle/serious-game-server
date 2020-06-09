@@ -4,3 +4,4 @@ description: Category ID
 required: true
 schema:
   type: integer
+example: 5ede5939ce29e417dc5bedf0

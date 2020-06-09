@@ -1,0 +1,63 @@
+put:
+  tags:
+  - Category
+  summary: Edit a category by ID
+  parameters:
+  - $ref: '#/components/parameters/catID'
+  description: >
+    Use this endpoint to edit an existing Category. 
+    The request body takes the name, and combined with the catID in the parameters, will edit the given Category.
+    A edit will return the complete updated list.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/Category'
+        example:
+          name: Humanity
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
+          example:
+            - _id: 5ede5939ce29e417dc5bedf0
+              name: Integrity
+            - _id: 5ede5939ce29e417dcfdadf0
+              name: Humanity
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
+delete:
+  tags:
+  - Category
+  summary: something
+  description: >
+    Deletes a Category from the server by it's catID. 
+    If successfull, returns the full list of updated Categories.
+  parameters:
+  - $ref: '#/components/parameters/catID'
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Category'
+          example:
+            - _id: 5ede5939ce29e417dc5bedf0
+              name: Integrity
+            - _id: 5ede5939ce29e417dcfdadf0
+              name: Humanity
+    404:
+      $ref: '#/components/responses/404'
+    default:
+      $ref: '#/components/responses/default'
