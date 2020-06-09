@@ -60,9 +60,12 @@ module.exports = {
                                             map[cat.name] = result[key]
                                         })
                                         j++;
-                                        if (i == Object.keys(result).length) {
+                                        if (j == Object.keys(result).length) {
                                             play.save().then(() => {
-                                                res.status(200).json(map).end()
+                                                let date = Date.now()
+                                                Game.findOneAndUpdate({_id: play.pin}, {$inc : {'totalPlays': 1}, lastPlayed: date}).then(() => {
+                                                    res.status(200).json(map).end()
+                                                })
                                             })
                                         }
                                     }     
