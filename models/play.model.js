@@ -15,6 +15,17 @@ const Play = new Schema({
     results: [{
         type: LevelAnswers.schema,
         required: false
+    }],
+    scores: [{
+        category: {
+            type: mongoose.ObjectId,
+            required: false
+        },
+        score: {
+            type: Number,
+            required: false
+        },
+        required: false
     }]
 }, { versionKey: false })
 
