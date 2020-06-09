@@ -5,6 +5,7 @@ const Game = require("../models/game.model")
 const LevelAnswers = require("../models/level.answers.model")
 
 module.exports = {
+    //Method for starting a new play from a game
     startNewGame(req, res, next){
         let gamePin = req.params.playID;
         const play = new Play({
@@ -14,7 +15,7 @@ module.exports = {
         
         //Saves a new session of the game (=play) and returns the questions of the first level
         play.save().then((session) => {
-            Game.findById(gamePin).select({questions: {$elemMatch: {level: 1}}}).then(result => {
+            Game.findById(gamePin, {_id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0}).select({questions: {$elemMatch: {level: 1}}}).then(result => {
                 result = result.toObject()
                 result['gameID'] = session._id
                 res.status(200).json(result).end()
