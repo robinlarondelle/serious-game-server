@@ -23,7 +23,7 @@ module.exports = {
             newGame.save().then(savedGame => {
                 res.status(201).json(savedGame).end()
             }).catch(err => next(new ApiError("ServerError", err, 400)))
-        } else next(new ApiError("BodyError", "Please provide 10 questions", 400))
+        } else next(new ApiError("BodyError", "Please provide at least 3 questions", 400))
     },
 
     updateGameByID(req, res, next) {
