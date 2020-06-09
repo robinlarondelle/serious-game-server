@@ -15,6 +15,9 @@ const Game = mongoose.Schema({
         type: [Question.schema],
         required: false
     }
-}, {versionKey: false})
+}, {
+    versionKey: true,
+    timestamps: true,
+})
 
 module.exports = mongoose.model("game", Game)
