@@ -17,9 +17,9 @@ module.exports = {
 
             //Saves a new session of the game (=play) and returns the questions of the first level
             play.save().then((session) => {
-                getLevel(pin, 1, session._id, (result) => {
+                getLevel(pin, 1, session._id).then(result => {
                     res.status(200).json(result).end();
-                })
+                }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
             }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
         } else next(new ApiError("Object not found", "The game with the provided pin '" + pin + "' does not exist.", 404))
     },
@@ -74,9 +74,9 @@ module.exports = {
                         })
                     } else {
                         //Gets the next level and returns it
-                        getLevel(play.pin, req.body.level+1, playID, (result) => {
+                        getLevel(play.pin, req.body.level+1, playID).then(result => {
                             res.status(200).json(result).end();
-                        })
+                        }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
                     }
                 })
             })
@@ -123,47 +123,35 @@ function getMetaData(question, answer, playID, callback) {
 }
 
 //Function for getting the questions from a given level and game pin
-function getLevelPromise(pin, level, playID) {
+function getLevel(pin, level, playID) {
     return new Promise((resolve, reject) => {
         //Finds the game and filters
         Game.findById(pin, {
-            _id: 0, 
+            '_id': 0, 
             'questions.category': 0, 
             'questions.answers.deltaScore': 0, 
-            'questions.level': 0 
+            '__v': 0, 
+            'createdAt': 0, 
+            'updatedAt': 0, 
+            'totalPlays': 0, 
+            'description': 0
         })
-        .select({questions: {$elemMatch: {level: level}}})
         .then(result => {
             try {
+                let questions = Array();
+                for (question of result.questions) {
+                    if (question.level == level) {
+                        delete question.level
+                        questions.push(question)
+                    }
+                }
                 result = result.toObject()
+                result['questions'] = questions
                 result['playID'] = playID
                 result['level'] = level
                 resolve(result)
             } catch (error) { reject(error) }
         }).catch(error => reject(error))
-    })
-}
-
-//Function for getting the questions from one level
-function getLevel(pin, level, playID, callback) {
-    Game.findById(pin, {_id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0, '__v': 0, 'createdAt': 0, 'updatedAt': 0, 'totalPlays': 0, 'description': 0 })
-    .then(result => {
-        result = result.toObject()
-        let list = Array();
-        let i = 0
-        for (question of result.questions) {
-            if (question.level == level) {
-                delete question.level
-                list.push(question)
-            }
-            i++
-            if (i == result.questions.length) {
-                result.questions = list
-                result['gameID'] = playID
-                result['level'] = level
-                callback(result)
-            }
-        }
     })
 }
 
