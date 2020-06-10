@@ -70,7 +70,7 @@ const statsRoute = require("./routes/stats.route")
 app.use("/game", gameRoute)
 app.use("/play", playRoute)
 app.use("/category", categoryRoute)
-// app.use("/stats", statsRoute)
+app.use("/stats", statsRoute)
 
 
 //Catch all non existing endpoints

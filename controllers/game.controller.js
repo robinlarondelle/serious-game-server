@@ -16,6 +16,18 @@ module.exports = {
         })
     },
 
+    getPlaysPerGame(req, res, next) {
+        Game.find({}).then(games => {
+            const playsPerGame = []
+            games.forEach(g => playsPerGame.push({
+                pin: g.pin,
+                totalPlays: g.totalPlays
+            }))
+
+            res.status(200).json(playsPerGame).end()
+        })
+    },
+
     getGameByID(req, res, next) {
         res.status(200).json(req.game).end()
     },

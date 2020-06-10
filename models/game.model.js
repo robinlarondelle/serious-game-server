@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
 const Question = require("../models/question.model")
-const Play = require("../models/play.model")
 
 const Game = mongoose.Schema({
     _id: {
@@ -24,7 +23,8 @@ const Game = mongoose.Schema({
         type: Number,
         required: true,
         default: 0
-    }, lastPlayed: {
+    },
+    lastPlayed: {
         type: Date,
         required: false
     }
