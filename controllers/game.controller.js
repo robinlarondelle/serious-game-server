@@ -8,6 +8,14 @@ module.exports = {
         })
     },
 
+    getAllGamePINs(req, res, next) {
+        Game.find({}).then(games => {
+            const pins = []
+            games.forEach(g => pins.push(g.pin))
+            res.status(200).json(pins).end()
+        })
+    },
+
     getGameByID(req, res, next) {
         res.status(200).json(req.game).end()
     },
