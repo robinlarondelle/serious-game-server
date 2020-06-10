@@ -7,21 +7,21 @@ const Category = require("../models/category.model")
 
 module.exports = {
     //Method for starting a new play from a game
-    startNewGame(req, res, next){
-        let gamePin = req.params.playID;
-        const play = new Play({
-            _id: new mongoose.Types.ObjectId(),
-            pin: gamePin
-        })
-        
-        //Saves a new session of the game (=play) and returns the questions of the first level
-        play.save().then((session) => {
-            getLevel(gamePin, 1, session._id, (result) => {
-                res.status(200).json(result).end();
+    async startNewGame(req, res, next){
+        let pin = req.params.playID;
+        if (await Game.exists({pin: pin})) {
+            const play = new Play({
+                _id: new mongoose.Types.ObjectId(),
+                pin: pin
             })
-        }).catch(error => {
-            next(new ApiError("Unkown error", error.message, 400));
-        })
+
+            //Saves a new session of the game (=play) and returns the questions of the first level
+            play.save().then((session) => {
+                getLevel(pin, 1, session._id, (result) => {
+                    res.status(200).json(result).end();
+                })
+            }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
+        } else next(new ApiError("Object not found", "The game with the provided pin '" + pin + "' does not exist.", 404))
     },
 
     //Method for uploading the answers to a play
@@ -119,6 +119,28 @@ function getMetaData(question, answer, playID, callback) {
                 }
             })
         })
+    })
+}
+
+//Function for getting the questions from a given level and game pin
+function getLevelPromise(pin, level, playID) {
+    return new Promise((resolve, reject) => {
+        //Finds the game and filters
+        Game.findById(pin, {
+            _id: 0, 
+            'questions.category': 0, 
+            'questions.answers.deltaScore': 0, 
+            'questions.level': 0 
+        })
+        .select({questions: {$elemMatch: {level: level}}})
+        .then(result => {
+            try {
+                result = result.toObject()
+                result['playID'] = playID
+                result['level'] = level
+                resolve(result)
+            } catch (error) { reject(error) }
+        }).catch(error => reject(error))
     })
 }
 

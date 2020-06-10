@@ -9,8 +9,10 @@ const Play = new Schema({
         default: false
     },
     pin: {
-        type: Number,
-        required: true
+        type: Number, field: "pin", ref: 'game',
+        required: true,
+        min: [100000, "The PIN needs to be a minimum of 10000"],
+        max: [999999, "The PIN needs to be a maximum of 99999"],
     },
     results: [{
         type: LevelAnswers.schema,
