@@ -38,21 +38,21 @@ module.exports = {
     //     })
     // }
     //Method for starting a new play from a game
-    startNewGame(req, res, next) {
-        let gamePin = req.params.playID;
-        const play = new Play({
-            _id: new mongoose.Types.ObjectId(),
-            pin: gamePin
-        })
-
-        //Saves a new session of the game (=play) and returns the questions of the first level
-        play.save().then((session) => {
-            getLevel(gamePin, 1, session._id, (result) => {
-                res.status(200).json(result).end();
+    async startNewGame(req, res, next) {
+        let pin = req.params.playID;
+        if (await Game.exists({ pin: pin })) {
+            const play = new Play({
+                _id: new mongoose.Types.ObjectId(),
+                pin: pin
             })
-        }).catch(error => {
-            next(new ApiError("Unkown error", error.message, 400));
-        })
+
+            //Saves a new session of the game (=play) and returns the questions of the first level
+            play.save().then((session) => {
+                getLevel(pin, 1, session._id).then(result => {
+                    res.status(200).json(result).end();
+                }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
+            }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
+        } else next(new ApiError("Object not found", "The game with the provided pin '" + pin + "' does not exist.", 404))
     },
 
     //Method for uploading the answers to a play
@@ -62,10 +62,10 @@ module.exports = {
 
         let levelAnswers = new LevelAnswers({
             level: req.body.level,
-        })               
+        })
 
         //Updates the database and returns the correct data to the client
-        createLevelAnswers(levelAnswers, answers, playID, (result) => {            
+        createLevelAnswers(levelAnswers, answers, playID, (result) => {
             Play.findOneAndUpdate(
                 { _id: playID },
                 {
@@ -106,9 +106,9 @@ module.exports = {
                             })
                         } else {
                             //Gets the next level and returns it
-                            getLevel(play.pin, req.body.level + 1, playID, (result) => {
+                            getLevel(play.pin, req.body.level + 1, playID).then(result => {
                                 res.status(200).json(result).end();
-                            })
+                            }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
                         }
                     })
                 })
@@ -117,11 +117,11 @@ module.exports = {
 }
 
 //Makes the game object containing all answers and metadata
-function createLevelAnswers(levelAnswers, answers, playID, callback) {   
+function createLevelAnswers(levelAnswers, answers, playID, callback) {
     let i = 0;
     for (let answer of answers) {
-        
-        getMetaData(answer.question, answer.answer, playID, (result) => {            
+
+        getMetaData(answer.question, answer.answer, playID, (result) => {
             levelAnswers.questions.push({
                 question: answer.question,
                 answer: answer.answer,
@@ -155,16 +155,37 @@ function getMetaData(question, answer, playID, callback) {
     })
 }
 
-//Function for getting the questions from one level
-function getLevel(pin, level, playID, callback) {
-    Game.findById(pin, { _id: 0, 'questions.category': 0, 'questions.answers.deltaScore': 0, 'questions.level': 0 })
-        .select({ questions: { $elemMatch: { level: level } } })
-        .then(result => {
-            result = result.toObject()
-            result['gameID'] = playID
-            result['level'] = level
-            callback(result)
+//Function for getting the questions from a given level and game pin
+function getLevel(pin, level, playID) {
+    return new Promise((resolve, reject) => {
+        //Finds the game and filters
+        Game.findById(pin, {
+            '_id': 0,
+            'questions.category': 0,
+            'questions.answers.deltaScore': 0,
+            '__v': 0,
+            'createdAt': 0,
+            'updatedAt': 0,
+            'totalPlays': 0,
+            'description': 0
         })
+            .then(result => {
+                try {
+                    let questions = Array();
+                    for (question of result.questions) {
+                        if (question.level == level) {
+                            delete question.level
+                            questions.push(question)
+                        }
+                    }
+                    result = result.toObject()
+                    result['questions'] = questions
+                    result['playID'] = playID
+                    result['level'] = level
+                    resolve(result)
+                } catch (error) { reject(error) }
+            }).catch(error => reject(error))
+    })
 }
 
 //Function for aggregating all results from one play

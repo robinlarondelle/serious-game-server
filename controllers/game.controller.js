@@ -36,7 +36,7 @@ module.exports = {
         let { pin, questions, description } = req.body
         if (pin == null) pin = Math.floor(Math.random() * 900000) + 100000 //create PIN if not supplied  
 
-        if (questions instanceof Array && questions.length == 3) {
+        if (questions instanceof Array && questions.length >= 3) {
             const newGame = new Game({ _id: pin, description: description, pin: pin, questions: questions })
 
             newGame.save().then(savedGame => {
@@ -59,8 +59,8 @@ module.exports = {
     },
 
     deleteGameByID(req, res, next) {
-        Game.findOneAndDelete(req.game._id)
-            .then(() => res.status(200).json({ "message": "success" }).end())
+        Game.findOneAndDelete({pin: req.params.gameID})
+            .then((result) => res.status(200).json(result).end())
             .catch(err => next(new ApiError("ServerError", err, 400)))
     }
 }
