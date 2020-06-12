@@ -18,12 +18,11 @@ module.exports = {
                         games.forEach(g => map.push({
                             name: g.pin,
                             series: []
-                            }
+                        }
                         ))
-
                         games.forEach(g => {
-                            g.questions.forEach(q => {                                
-                                const c = categories.find(c => String(c._id) == String(q.category))                                                                
+                            g.questions.forEach(q => {
+                                const c = categories.find(c => String(c._id) == String(q.category))
                                 const mapIndex = map.findIndex(m => m.name == g.pin)
                                 const mapObject = map[mapIndex]
                                 let add = true
@@ -36,21 +35,21 @@ module.exports = {
 
                                 map[mapIndex] = mapObject
                             })
-                        }) 
+                        })
                     })
                     .then(() => {
                         Play
-                            .find({finished: true})
+                            .find({ finished: true })
                             .select(["pin", "scores"])
                             .then(plays => {
                                 plays.map(p => p.toObject())
-                                
+
                                 plays.forEach(p => {
                                     let mapObject = map.find(m => m.name == p.pin)
 
                                     p.scores.forEach(sc => {
                                         console.log(sc);
-                                        
+
                                         const c = categories.find(c => String(c._id) == String(sc.category))
                                         const s = mapObject.series.find(s => s.name == c.name)
                                         s.scores.push(sc.score)
