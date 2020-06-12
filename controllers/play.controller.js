@@ -65,53 +65,64 @@ module.exports = {
         })
 
         //Updates the database and returns the correct data to the client
-        createLevelAnswers(levelAnswers, answers, playID, (result) => {
-            Play.findOneAndUpdate(
-                { _id: playID },
-                {
-                    $push: { results: result }
-                }).then(() => {
-                    Play.findById(playID).then((play) => {
-                        if (req.body.level == 3) {
-                            //Aggregates the results and returns them
-                            aggregateData(play, (result) => {
-                                let i = 0;
-                                play.finished = true
-                                for (let [key, value] of Object.entries(result)) {
-                                    play.scores.push({
-                                        category: key,
-                                        score: value
-                                    })
-                                    i++;
-                                    if (i == Object.keys(result).length) {
-                                        let map = {}
-                                        let j = 0
-                                        for (let key of Object.keys(result)) {
-                                            Category.findById(key).then(cat => {
-                                                console.log(cat)
-                                                map[cat.name] = result[key]
+        createLevelAnswers(levelAnswers, answers, playID, (err, result) => {
+            if (err == null) {
+                Play.findOneAndUpdate(
+                    { _id: playID },
+                    {
+                        $push: { results: result }
+                    }).then(() => {
+                        Play.findById(playID).then((play) => {
+                            if (play != null) {
+                                if (req.body.level == 3) {
+                                    //Aggregates the results and returns them
+                                    aggregateData(play, (result) => {
+                                        let i = 0;
+                                        play.finished = true
+                                        for (let [key, value] of Object.entries(result)) {
+                                            play.scores.push({
+                                                category: key,
+                                                score: value
                                             })
-                                            j++;
-                                            if (j == Object.keys(result).length) {
-                                                play.save().then(() => {
-                                                    let date = Date.now()
-                                                    Game.findOneAndUpdate({ _id: play.pin }, { $inc: { 'totalPlays': 1 }, lastPlayed: date }).then(() => {
-                                                        res.status(200).json(map).end()
-                                                    })
-                                                })
+                                            i++;
+                                            if (i == Object.keys(result).length) {
+                                                let map = {}
+                                                let j = 0
+                                                for (let key of Object.keys(result)) {
+                                                    Category.findById(key)
+                                                        .then(cat => {
+                                                            console.log(cat)
+                                                            map[cat.name] = result[key]
+                                                        }).catch(err => next(new ApiError("ServerError", err, 400)))
+                                                    j++;
+                                                    if (j == Object.keys(result).length) {
+                                                        play.save().then(() => {
+                                                            let date = Date.now()
+                                                            Game.findOneAndUpdate(
+                                                                { _id: play.pin }, 
+                                                                { $inc: 
+                                                                    { 'totalPlays': 1 }, 
+                                                                    lastPlayed: date 
+                                                                })
+                                                                .then(() => {
+                                                                    res.status(200).json(map).end()
+                                                                }).catch(err => next(new ApiError("ServerError", err, 400)))
+                                                        }).catch(err => next(new ApiError("ServerError", err, 400)))
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
+                                    })
+                                } else {
+                                    //Gets the next level and returns it
+                                    getLevel(play.pin, req.body.level + 1, playID).then(result => {
+                                        res.status(200).json(result).end();
+                                    }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
                                 }
-                            })
-                        } else {
-                            //Gets the next level and returns it
-                            getLevel(play.pin, req.body.level + 1, playID).then(result => {
-                                res.status(200).json(result).end();
-                            }).catch(error => next(new ApiError("Unkown error", error.message, 500)))
-                        }
-                    })
-                })
+                            } else next(new ApiError("NotFound", `Play with ID ${playID} not found`, 404))
+                        }).catch(err => next(new ApiError("ServerError", err, 400)))
+                    }).catch(err => next(new ApiError("ServerError", err, 400)))
+            } else next(new ApiError("ServerError", err, 400))
         })
     }
 }
@@ -121,17 +132,17 @@ function createLevelAnswers(levelAnswers, answers, playID, callback) {
     let i = 0;
     for (let answer of answers) {
 
-        getMetaData(answer.question, answer.answer, playID, (result) => {
-            levelAnswers.questions.push({
-                question: answer.question,
-                answer: answer.answer,
-                category: result.category,
-                deltaScore: result.deltaScore
-            })
-            i++;
-            if (i == answers.length) {
-                callback(levelAnswers)
-            }
+        getMetaData(answer.question, answer.answer, playID, (err, result) => {
+            if (err == null) {
+                levelAnswers.questions.push({
+                    question: answer.question,
+                    answer: answer.answer,
+                    category: result.category,
+                    deltaScore: result.deltaScore
+                })
+                i++;
+                if (i == answers.length) callback(null, levelAnswers)
+            } else callback(err, null)
         })
     }
 }
@@ -139,19 +150,25 @@ function createLevelAnswers(levelAnswers, answers, playID, callback) {
 //Gets the metadata (category and deltaScore) of a single answer
 function getMetaData(question, answer, playID, callback) {
     Play.findById({ _id: playID }).then(play => {
-        Game.findOne({ "pin": play.pin }).select({ questions: { $elemMatch: { _id: question } } }).then(result => {
-            category = result.questions[0].category
-        }).then(() => {
-            Game.findOne({ "pin": play.pin }).select({ questions: { $elemMatch: { _id: question } } }).then(result => {
-                for (let a of result.questions[0].answers) {
-                    if (a._id == answer) {
-                        deltaScore = a.deltaScore
-                        callback({ category: category, deltaScore: deltaScore })
-                        break;
-                    }
-                }
-            })
-        })
+        if (play != null) {
+            Game.findOne({ "pin": play.pin })
+                .select({ questions: { $elemMatch: { _id: question } } })
+                .then(result => {
+                    category = result.questions[0].category
+                }).then(() => {
+                    Game.findOne({ "pin": play.pin })
+                        .select({ questions: { $elemMatch: { _id: question } } })
+                        .then(result => {
+                            for (let a of result.questions[0].answers) {
+                                if (a._id == answer) {
+                                    deltaScore = a.deltaScore
+                                    callback(null, { category: category, deltaScore: deltaScore })
+                                    break;
+                                }
+                            }
+                        }).catch(err => callback(err, null))
+                }).catch(err => callback(err, null))
+        } else callback(`No play found with ID ${playID}`, null)
     })
 }
 
