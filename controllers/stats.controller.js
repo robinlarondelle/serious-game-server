@@ -35,7 +35,7 @@ module.exports = {
                                 //After that we'll add the categories from that game to the map
                                 games.forEach(g => {
                                     g.questions.forEach(q => {
-                                        
+
                                         //Transform the category ID from a question to a name
                                         const c = categories.find(c => String(c._id) == String(q.category))
                                         const mapIndex = map.findIndex(m => m.name == g.pin)
@@ -66,7 +66,7 @@ module.exports = {
                                         plays.map(p => p.toObject())
 
                                         plays.forEach(p => {
-                                            
+
                                             //Fetch the object in the map which correspondents to this play's game.
                                             let mapObject = map.find(m => m.name == p.pin)
 
@@ -76,7 +76,7 @@ module.exports = {
                                             p.scores.forEach(sc => {
                                                 const c = categories.find(c => String(c._id) == String(sc.category))
                                                 const s = mapObject.series.find(s => s.name == c.name)
-                                                
+
                                                 s.scores.push(sc.score)
                                             })
                                         })
