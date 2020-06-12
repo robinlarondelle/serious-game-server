@@ -94,13 +94,19 @@ module.exports = {
 
                                 //After that, we can calculate the average score by using .reduce()
                                 .then(() => {
-                                    console.log(map);
+                                    map.forEach(m => console.log(m.series))
                                     
                                     map.forEach(m => {
                                         m.series.forEach(s => {
-                                            //We create a new value property inside the object which holds the average value
-                                            s.value = s.scores.reduce((total, current) => total + current) / s.scores.length
-                                            delete s.scores //And we delete the temporary datastructure which hold oud individual values
+
+                                            if (s.scores.length == 1) {
+                                                s.value = s.scores[0]
+                                                delete s.scores
+                                            } else {
+                                                //We create a new value property inside the object which holds the average value
+                                                s.value = s.scores.reduce((total, current) => total + current) / s.scores.length
+                                                delete s.scores //And we delete the temporary datastructure which hold oud individual values
+                                            }
                                         })
                                     })
                                 })
