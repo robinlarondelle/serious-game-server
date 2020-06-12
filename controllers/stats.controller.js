@@ -32,16 +32,40 @@ module.exports = {
                                     if (s.name == c.name) add = false
                                 })
 
-                                if (add) mapObject.series.push({ name: c.name })
+                                if (add) mapObject.series.push({ name: c.name, scores: [] })
 
                                 map[mapIndex] = mapObject
                             })
                         }) 
                     })
                     .then(() => {
+                        Play
+                            .find({finished: true})
+                            .select(["pin", "scores"])
+                            .then(plays => {
+                                plays.map(p => p.toObject())
+                                
+                                plays.forEach(p => {
+                                    let mapObject = map.find(m => m.name == p.pin)
 
+                                    p.scores.forEach(sc => {
+                                        console.log(sc);
+                                        
+                                        const c = categories.find(c => String(c._id) == String(sc.category))
+                                        const s = mapObject.series.find(s => s.name == c.name)
+                                        s.scores.push(sc.score)
+                                    })
+                                })
+                            })
+                            .then(() => {
+                                map.forEach(m => {
+                                    m.series.forEach(s => {
+                                        s.scores = s.scores.reduce((total, current) => total + current) / s.scores.length
+                                    })
+                                })
+                            })
+                            .then(() => res.status(200).json(map).end())
                     })
-                    .then(() => res.status(200).json(map).end())
             })
     }
 }
