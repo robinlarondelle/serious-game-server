@@ -48,8 +48,6 @@ module.exports = {
                                     let mapObject = map.find(m => m.name == p.pin)
 
                                     p.scores.forEach(sc => {
-                                        console.log(sc);
-
                                         const c = categories.find(c => String(c._id) == String(sc.category))
                                         const s = mapObject.series.find(s => s.name == c.name)
                                         s.scores.push(sc.score)
@@ -59,7 +57,8 @@ module.exports = {
                             .then(() => {
                                 map.forEach(m => {
                                     m.series.forEach(s => {
-                                        s.scores = s.scores.reduce((total, current) => total + current) / s.scores.length
+                                        s.value = s.scores.reduce((total, current) => total + current) / s.scores.length
+                                        delete s.scores
                                     })
                                 })
                             })
