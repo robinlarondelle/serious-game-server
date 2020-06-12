@@ -69,7 +69,7 @@ module.exports = {
 
                                         plays.forEach(p => {
                                             console.log("\nplays");
-                                            console.log(play);
+                                            console.log(p);
                                             
                                             //Fetch the object in the map which correspondents to this play's game.
                                             let mapObject = map.find(m => m.name == p.pin)
