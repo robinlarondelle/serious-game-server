@@ -79,7 +79,13 @@ module.exports = {
                                             //This is needed because we need to know by what number we need to devide the sum of the array
                                             p.scores.forEach(sc => {
                                                 const c = categories.find(c => String(c._id) == String(sc.category))
+                                                console.log("found category");
+                                                console.log(c);
+                                                
                                                 const s = mapObject.series.find(s => s.name == c.name)
+                                                console.log("found s");
+                                                console.log(sc.score);
+                                                
                                                 s.scores.push(sc.score)
                                             })
                                         })
@@ -88,6 +94,8 @@ module.exports = {
 
                                 //After that, we can calculate the average score by using .reduce()
                                 .then(() => {
+                                    console.log(map);
+                                    
                                     map.forEach(m => {
                                         m.series.forEach(s => {
                                             //We create a new value property inside the object which holds the average value
