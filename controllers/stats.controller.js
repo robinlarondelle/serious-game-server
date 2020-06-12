@@ -99,7 +99,10 @@ module.exports = {
                                     map.forEach(m => {
                                         m.series.forEach(s => {
 
-                                            if (s.scores.length == 1) {
+                                            if (s.scores.length == 0) {
+                                                s.value = 0
+                                                delete s.scores
+                                            } else if (s.scores.length == 1) {
                                                 s.value = s.scores[0]
                                                 delete s.scores
                                             } else {
