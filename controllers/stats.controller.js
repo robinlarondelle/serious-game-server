@@ -149,17 +149,5 @@ module.exports = {
                         }).catch(err => next(new ApiError("ServerError", err, 400)))
                 } else next(new ApiError("NotFound", "No categories found in the database", 404))
             }).catch(err => next(new ApiError("ServerError", err, 400)))
-    },
-
-    updateAllPlays(req, res, next) {
-        Play
-            .find()
-            .then(plays => {
-                plays.forEach(p => {
-                    p.createdAt = Date.now()
-                    p.updatedAt = Date.now()
-                    p.save()
-                })
-            }).then(poep => res.status(200).json(poep).end())
     }
 }
