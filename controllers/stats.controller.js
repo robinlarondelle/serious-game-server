@@ -111,6 +111,51 @@ module.exports = {
     },
 
     avgPlayer(req, res, next) {
+        let map = [{
+            name: "Gemiddelde speler",
+            series: []
+        }]
+        const { limit } = req.param
 
+        Category
+            .find()
+            .select("name")
+            .then(categories => {
+                if (categories.length > 0) {
+                    categories.map(c => c.toObject())
+
+                    Play
+                        .find({ finished: true })
+                        .select(["scores"])
+                        .sort({ createdAt: 'desc' })
+                        .limit(limit)
+                        .then(plays => {
+                            console.log(plays);
+
+                            if (plays.length > 0) {
+                                plays.map(p => p.toObject())
+
+                                plays.forEach(p => {
+                                    p.scores.forEach(sc => {
+                                        const c = categories.find(c => String(c._id) == String(sc.category))
+
+
+                                    })
+                                })
+
+                                res.json(plays).end()
+
+                            } else next(new ApiError("NotFound", "No Plays objects found in the database", 404))
+                        }).catch(err => next(new ApiError("ServerError", err, 400)))
+                } else next(new ApiError("NotFound", "No categories found in the database", 404))
+            }).catch(err => next(new ApiError("ServerError", err, 400)))
+    },
+
+    updateAllPlays(req, res, next) {
+        Play
+            .updateMany({}, { $set: { updatedAt: new Date(), createdAt: new Date() } })
+            .then(results => {
+                res.status(200).json(results).end()
+            }).catch(err => next(new ApiError("ServerError", err, 400)))
     }
 }
