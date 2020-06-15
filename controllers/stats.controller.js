@@ -153,9 +153,13 @@ module.exports = {
 
     updateAllPlays(req, res, next) {
         Play
-            .updateMany({}, { $set: { updatedAt: new Date(), createdAt: new Date() } })
-            .then(results => {
-                res.status(200).json(results).end()
-            }).catch(err => next(new ApiError("ServerError", err, 400)))
+            .find()
+            .then(plays => {
+                plays.forEach(p => {
+                    p.createdAt = Date.now()
+                    p.updatedAt = Date.now()
+                    p.save()
+                })
+            }).then(poep => res.status(200).json(poep).end())
     }
 }
