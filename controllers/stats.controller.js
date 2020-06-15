@@ -111,10 +111,10 @@ module.exports = {
     },
 
     avgPlayer(req, res, next) {
-        let map = [{
+        let map = {
             name: "Gemiddelde speler",
             series: []
-        }]
+        }
         const { limit } = req.param
 
         Category
@@ -130,7 +130,6 @@ module.exports = {
                         .sort({ createdAt: 'desc' })
                         .limit(limit)
                         .then(plays => {
-                            console.log(plays);
 
                             if (plays.length > 0) {
                                 plays.map(p => p.toObject())
@@ -138,12 +137,20 @@ module.exports = {
                                 plays.forEach(p => {
                                     p.scores.forEach(sc => {
                                         const c = categories.find(c => String(c._id) == String(sc.category))
-
+                                        const s = map.series.find(s => s.name == c.name)
+                                        
+                                        if (s == null) map.series.push({name: c.name, scores: []})
+                                        else if (sc.score != 0) s.scores.push(sc.score)
+                                        else {/* dont add */}
 
                                     })
                                 })
+                                
 
-                                res.json(plays).end()
+                                map.series.forEach(s => s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length))
+                                map.series.forEach(s => delete s.scores)
+
+                                res.status(200).json([map]).end()
 
                             } else next(new ApiError("NotFound", "No Plays objects found in the database", 404))
                         }).catch(err => next(new ApiError("ServerError", err, 400)))
