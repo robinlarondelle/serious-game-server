@@ -108,5 +108,9 @@ module.exports = {
                         }).catch(err => next(new ApiError("ServerError", err, 400)))
                 } else next(new ApiError("NotFound", "No categories found in the database", 404))
             }).catch(err => next(new ApiError("ServerError", err, 400)))
+    },
+
+    avgPlayer(req, res, next) {
+
     }
 }
