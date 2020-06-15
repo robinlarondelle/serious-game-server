@@ -2,6 +2,7 @@ const Category = require("../models/category.model")
 const Game = require("../models/game.model")
 const Play = require("../models/play.model")
 const ApiError = require("../models/apiError.model")
+const moment = require("moment");
 
 module.exports = {
 
@@ -156,5 +157,20 @@ module.exports = {
                         }).catch(err => next(new ApiError("ServerError", err, 400)))
                 } else next(new ApiError("NotFound", "No categories found in the database", 404))
             }).catch(err => next(new ApiError("ServerError", err, 400)))
+    },
+
+    playsPerDay(req, res, next) {
+        let map = [];
+        Play
+            .find({ pin: req.params.gameID, finished: true })
+            .then(filteredPlays => {
+                // Got all the filteredPlays
+                filteredPlays.forEach((p) => {
+                    let newDate = p.createdAt;
+                    // let newDate = moment(p.createdAt).toDate();
+                    p.createdAt = moment(p.createdAt).utcOffset(0).startOf('day');
+                    map.push(p);
+                });
+            }).then(() => res.status(200).json(map).end);
     }
 }
