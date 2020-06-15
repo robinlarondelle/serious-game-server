@@ -139,14 +139,14 @@ module.exports = {
                                     p.scores.forEach(sc => {
                                         const c = categories.find(c => String(c._id) == String(sc.category))
                                         const s = map.series.find(s => s.name == c.name)
-                                        
-                                        if (s == null) map.series.push({name: c.name, scores: []})
+
+                                        if (s == null) map.series.push({ name: c.name, scores: [] })
                                         else if (sc.score != 0) s.scores.push(sc.score)
-                                        else {/* dont add */}
+                                        else {/* dont add */ }
 
                                     })
                                 })
-                                
+
 
                                 map.series.forEach(s => s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length))
                                 map.series.forEach(s => delete s.scores)
@@ -161,14 +161,21 @@ module.exports = {
 
     playsPerDay(req, res, next) {
         let map = [];
-        const {gameID} = req.params
+        const { gameID } = req.params
         if (gameID != null && !isNaN(gameID)) {
 
             Play.aggregate([
                 {
                     $group: {
-                        _id: {$dateToString: { format: "%Y-%m-%d", date: "$createdAt"}},
-                        amountOfPlays: { $sum: 1 }
+                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+                        value: { $sum: 1 }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        name: "$_id",
+                        value: 1
                     }
                 }
             ]).then(results => {
