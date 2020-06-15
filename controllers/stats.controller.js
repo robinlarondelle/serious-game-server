@@ -161,16 +161,19 @@ module.exports = {
 
     playsPerDay(req, res, next) {
         let map = [];
-        Play
-            .find({ pin: req.params.gameID, finished: true })
-            .then(filteredPlays => {
-                // Got all the filteredPlays
-                filteredPlays.forEach((p) => {
-                    let newDate = p.createdAt;
-                    // let newDate = moment(p.createdAt).toDate();
-                    p.createdAt = moment(p.createdAt).utcOffset(0).startOf('day');
-                    map.push(p);
-                });
-            }).then(() => res.status(200).json(map).end);
+        const {gameID} = req.params
+        if (gameID != null && !isNaN(gameID)) {
+
+            Play.aggregate([
+                {
+                    $group: {
+                        _id: {$dateToString: { format: "%Y-%m-%d", date: "$createdAt"}},
+                        amountOfPlays: { $sum: 1 }
+                    }
+                }
+            ]).then(results => {
+                res.status(200).json(results).end()
+            }).catch(err => next(new ApiError("ServerError", err, 400)))
+        } else next(new ApiError("ParamError", "Please provide a valid gameID", 404))
     }
 }
