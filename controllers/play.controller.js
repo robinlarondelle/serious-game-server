@@ -4,6 +4,7 @@ const Play = require("../models/play.model")
 const Game = require("../models/game.model")
 const LevelAnswers = require("../models/level.answers.model")
 const Category = require("../models/category.model")
+const e = require("express")
 
 module.exports = {
     getPlaysPerDay(req, res, next) {
@@ -40,6 +41,11 @@ module.exports = {
     //Method for starting a new play from a game
     async startNewGame(req, res, next) {
         let pin = req.params.playID;
+        let regex = RegExp("^[0-9]*$");
+        if(!regex.test(pin)) {
+            next(new ApiError("Not acceptable. Invalid Game PIN", "PIN can only contain numbers ([0-9])", 417));
+            return;
+        }
         if (await Game.exists({ pin: pin })) {
             const play = new Play({
                 _id: new mongoose.Types.ObjectId(),
@@ -99,10 +105,10 @@ module.exports = {
                                                         play.save().then(() => {
                                                             let date = Date.now()
                                                             Game.findOneAndUpdate(
-                                                                { _id: play.pin }, 
-                                                                { $inc: 
-                                                                    { 'totalPlays': 1 }, 
-                                                                    lastPlayed: date 
+                                                                { _id: play.pin },
+                                                                { $inc:
+                                                                    { 'totalPlays': 1 },
+                                                                    lastPlayed: date
                                                                 })
                                                                 .then(() => {
                                                                     res.status(200).json(map).end()
