@@ -3,6 +3,7 @@ const Game = require("../models/game.model")
 const Play = require("../models/play.model")
 const ApiError = require("../models/apiError.model")
 const moment = require("moment");
+const { Mongoose } = require("mongoose");
 
 module.exports = {
 
@@ -166,25 +167,37 @@ module.exports = {
 
             Play.aggregate([
                 {
+                    $match: {
+                        'pin': parseInt(gameID),
+                    },
+                },
+                {
                     $group: {
-                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-                        value: { $sum: 1 }
-                    }
+                        _id: {
+                            $dateToString: {
+                                format: "%Y-%m-%d",
+                                date: "$createdAt",
+                            },
+                        },
+                        value: { $sum: 1 },
+                    },
                 },
                 {
                     $project: {
                         _id: 0,
                         name: "$_id",
-                        value: 1
-                    }
-                }
-            ]).then(results => {
-                // Sort function on date, making it chronological
-                results.sort(function(a,b) {
-                    return new Date(a.name) - new Date(b.name);
-                });
-                res.status(200).json(results).end()
-            }).catch(err => next(new ApiError("ServerError", err, 400)))
+                        value: 1,
+                    },
+                },
+            ])
+                .then((results) => {
+                    // Sort function on date, making it chronological
+                    results.sort(function (a, b) {
+                        return new Date(a.name) - new Date(b.name);
+                    });
+                    res.status(200).json(results).end();
+                })
+                .catch((err) => next(new ApiError("ServerError", err, 400)));
         } else next(new ApiError("ParamError", "Please provide a valid gameID", 404))
     }
 }
