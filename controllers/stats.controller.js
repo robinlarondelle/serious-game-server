@@ -4,6 +4,7 @@ const Play = require("../models/play.model")
 const ApiError = require("../models/apiError.model")
 const moment = require("moment");
 const { Mongoose } = require("mongoose");
+const { min } = require("moment");
 
 module.exports = {
 
@@ -63,7 +64,7 @@ module.exports = {
                             Play
                                 .find({ finished: true })
                                 .select(["pin", "scores"])
-                                .then(plays => {                                    
+                                .then(plays => {
                                     if (plays.length > 0) {
                                         plays.map(p => p.toObject())
 
@@ -71,14 +72,14 @@ module.exports = {
 
                                             //Fetch the object in the map which correspondents to this play's game.
                                             let mapObject = map.find(m => m.name == p.pin)
-                                            
+
                                             //Create a temporary array datastructure in the map to store the individual score values
                                             //We do not calculate the average here, we're simply adding numbers to an array from a category
                                             //This is needed because we need to know by what number we need to devide the sum of the array
                                             p.scores.forEach(sc => {
                                                 const c = categories.find(c => String(c._id) == String(sc.category))
                                                 const s = mapObject.series.find(s => s.name == c.name)
-                                                
+
                                                 if (sc.score != 0) s.scores.push(sc.score)
                                             })
                                         })
@@ -92,7 +93,7 @@ module.exports = {
                                     //         console.log(Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length))
                                     //     })
                                     // })
-                                    
+
 
                                     map.forEach(m => {
                                         m.series.forEach(s => {
@@ -110,11 +111,11 @@ module.exports = {
                                             }
                                         })
                                     })
-                                   
+
                                     map.forEach(m => {
                                         const updatedSeries = []
 
-                                        m.series.forEach(s =>{
+                                        m.series.forEach(s => {
                                             if (s.value != 0) updatedSeries.push(s)
                                         })
 
@@ -125,7 +126,7 @@ module.exports = {
                                     map.forEach(m => {
                                         if (m.series.length != 0) updatedMap.push(m)
                                     })
-                                    map = updatedMap 
+                                    map = updatedMap
                                 })
 
                                 //Because of async database calls, the response has to be after the final database call
@@ -140,7 +141,7 @@ module.exports = {
             name: "Gemiddelde speler",
             series: []
         }
-        const { limit } = req.query        
+        const { limit } = req.query
 
         Category
             .find()
@@ -155,27 +156,27 @@ module.exports = {
                         .sort({ createdAt: -1 })
                         .limit(parseInt(limit))
                         .then(plays => {
-                            
+
                             if (plays.length > 0) {
                                 plays.map(p => p.toObject())
 
                                 plays.forEach(p => {
-                                    
+
                                     p.scores.forEach(sc => {
                                         if (sc.score != 0) {
                                             const c = categories.find(c => String(c._id) == String(sc.category))
                                             let s = map.series.find(s => s.name == c.name)
 
-                                            if (s == null) map.series.push({name: c.name, scores: []})
+                                            if (s == null) map.series.push({ name: c.name, scores: [] })
                                             s = map.series.find(s => s.name == c.name)
-                                            
+
                                             s.scores.push(sc.score)
                                         }
                                     })
                                 })
 
                                 map.series.forEach(s => {
-                                    if (s.scores.length == 1) s.value = s.scores[0] 
+                                    if (s.scores.length == 1) s.value = s.scores[0]
                                     s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length)
                                 })
 
@@ -235,8 +236,8 @@ module.exports = {
         const { pin } = req.params
 
         Play
-            .find({pin, finished: true})
-            .sort({createdAt: -1})
+            .find({ pin, finished: true })
+            .sort({ createdAt: -1 })
             .then(plays => {
                 let topScore = 0
                 let topPlay = null
@@ -254,7 +255,24 @@ module.exports = {
                     }
                 })
 
-                res.status(200).json(topPlay).end()
+                let forReturn = {
+                    _id: topPlay._id,
+                    pin: pin,
+                    scores: []
+                }
+
+                Category.find().then(categories => {
+                    categories.forEach(c => {
+                        topPlay.scores.forEach(s => {
+                            if (String(s.category) == String(c._id)) {
+                                forReturn.scores.push({
+                                    score: s.score,
+                                    category: c.name
+                                })
+                            }
+                        })
+                    })
+                }).then(() => res.status(200).json(forReturn).end())
             })
     },
 
@@ -262,8 +280,8 @@ module.exports = {
         const { pin } = req.params
 
         Play
-            .find({pin, finished: true})
-            .sort({createdAt: -1})
+            .find({ pin, finished: true })
+            .sort({ createdAt: -1 })
             .then(plays => {
                 let minScore = null
                 let minPlay = null
@@ -275,13 +293,30 @@ module.exports = {
                         sum = sum + s.score
                     })
 
-                    if (minScore == null ||sum <= minScore) {
+                    if (minScore == null || sum <= minScore) {
                         minScore = sum
                         minPlay = p
                     }
                 })
+                
+                let forReturn = {
+                    _id: minPlay._id,
+                    pin: pin,
+                    scores: []
+                }
 
-                res.status(200).json(minPlay).end()
+                Category.find().then(categories => {
+                    categories.forEach(c => {
+                        minPlay.scores.forEach(s => {
+                            if (String(s.category) == String(c._id)) {
+                                forReturn.scores.push({
+                                    score: s.score,
+                                    category: c.name
+                                })
+                            }
+                        })
+                    })
+                }).then(() => res.status(200).json(forReturn).end())
             })
     },
 
@@ -295,7 +330,7 @@ module.exports = {
             .then(categories => {
 
                 Game
-                    .find({_id: parseInt(pin)})
+                    .find({ _id: parseInt(pin) })
                     .then(games => {
                         games.forEach(g => {
                             let amountOfQuestions = []
@@ -303,11 +338,11 @@ module.exports = {
                             g.questions.forEach(q => {
                                 const category = categories.find(c => String(c._id) == q.category)
                                 console.log(category.name);
-                                
+
                                 const categoryIndex = amountOfQuestions.findIndex(a => a.name == category.name)
 
                                 console.log(categoryIndex);
-                                
+
                                 if (categoryIndex == -1) {
                                     amountOfQuestions.push({
                                         name: category.name,
