@@ -213,5 +213,57 @@ module.exports = {
         } else next(new ApiError("ParamError", "Please provide a valid gameID", 404))
     },
 
-    
+    getTopPlay(req, res, next) {
+        const { pin } = req.params
+
+        Play
+            .find({pin, finished: true})
+            .sort({createdAt: -1})
+            .then(plays => {
+                let topScore = 0
+                let topPlay = null
+
+                plays.forEach(p => {
+                    let sum = 0
+
+                    p.scores.forEach(s => {
+                        sum = sum + s.score
+                    })
+
+                    if (sum >= topScore) {
+                        topScore = sum
+                        topPlay = p
+                    }
+                })
+
+                res.status(200).json(topPlay).end()
+            })
+    },
+
+    getMinPlay(req, res, next) {
+        const { pin } = req.params
+
+        Play
+            .find({pin, finished: true})
+            .sort({createdAt: -1})
+            .then(plays => {
+                let minScore = null
+                let minPlay = null
+
+                plays.forEach(p => {
+                    let sum = 0
+
+                    p.scores.forEach(s => {
+                        sum = sum + s.score
+                    })
+
+                    if (minScore == null ||sum <= minScore) {
+                        minScore = sum
+                        minPlay = p
+                    }
+                })
+
+                res.status(200).json(minPlay).end()
+            })
+    }
 }
