@@ -62,7 +62,7 @@ module.exports = {
                             Play
                                 .find({ finished: true })
                                 .select(["pin", "scores"])
-                                .then(plays => {
+                                .then(plays => {                                    
                                     if (plays.length > 0) {
                                         plays.map(p => p.toObject())
 
@@ -70,15 +70,15 @@ module.exports = {
 
                                             //Fetch the object in the map which correspondents to this play's game.
                                             let mapObject = map.find(m => m.name == p.pin)
-
+                                            
                                             //Create a temporary array datastructure in the map to store the individual score values
                                             //We do not calculate the average here, we're simply adding numbers to an array from a category
                                             //This is needed because we need to know by what number we need to devide the sum of the array
                                             p.scores.forEach(sc => {
                                                 const c = categories.find(c => String(c._id) == String(sc.category))
                                                 const s = mapObject.series.find(s => s.name == c.name)
-
-                                                s.scores.push(sc.score)
+                                                
+                                                if (sc.score != 0) s.scores.push(sc.score)
                                             })
                                         })
                                     } else next(new ApiError("NotFound", "No Plays objects found in the database", 404))
@@ -86,6 +86,13 @@ module.exports = {
 
                                 //After that, we can calculate the average score by using .reduce()
                                 .then(() => {
+                                    // map.forEach(m => {
+                                    //     m.series.forEach(s => {
+                                    //         console.log(Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length))
+                                    //     })
+                                    // })
+                                    
+
                                     map.forEach(m => {
                                         m.series.forEach(s => {
 
@@ -144,7 +151,7 @@ module.exports = {
                     Play
                         .find({ finished: true })
                         .select(["scores"])
-                        .sort({ createdAt: 'desc' })
+                        .sort({ createdAt: -1 })
                         .limit(parseInt(limit))
                         .then(plays => {
                             
@@ -155,26 +162,22 @@ module.exports = {
                                     
                                     p.scores.forEach(sc => {
                                         if (sc.score != 0) {
-                                            console.log(sc);
-                                            
                                             const c = categories.find(c => String(c._id) == String(sc.category))
-                                            const s = map.series.find(s => s.name == c.name)
-                                            console.log(c.name);
-                                            console.log(s);
-                                            
+                                            let s = map.series.find(s => s.name == c.name)
 
-                                            if (s == null) map.series.push({ name: c.name, scores: [sc.score] })
-                                            else if (sc.score != 0) s.scores.push(sc.score)
-                                            else {/* dont add */ }
+                                            if (s == null) map.series.push({name: c.name, scores: []})
+                                            s = map.series.find(s => s.name == c.name)
+                                            
+                                            s.scores.push(sc.score)
                                         }
                                     })
                                 })
-                                
 
                                 map.series.forEach(s => {
                                     if (s.scores.length == 1) s.value = s.scores[0] 
                                     s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length)
                                 })
+
                                 map.series.forEach(s => delete s.scores)
 
                                 res.status(200).json([map]).end()
