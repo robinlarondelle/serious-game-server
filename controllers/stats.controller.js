@@ -179,6 +179,10 @@ module.exports = {
                     }
                 }
             ]).then(results => {
+                // Sort function on date, making it chronological
+                results.sort(function(a,b) {
+                    return new Date(a.name) - new Date(b.name);
+                });
                 res.status(200).json(results).end()
             }).catch(err => next(new ApiError("ServerError", err, 400)))
         } else next(new ApiError("ParamError", "Please provide a valid gameID", 404))
