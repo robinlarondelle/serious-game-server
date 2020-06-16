@@ -102,6 +102,22 @@ module.exports = {
                                             }
                                         })
                                     })
+                                   
+                                    map.forEach(m => {
+                                        const updatedSeries = []
+
+                                        m.series.forEach(s =>{
+                                            if (s.value != 0) updatedSeries.push(s)
+                                        })
+
+                                        m.series = updatedSeries
+                                    })
+
+                                    const updatedMap = []
+                                    map.forEach(m => {
+                                        if (m.series.length != 0) updatedMap.push(m)
+                                    })
+                                    map = updatedMap 
                                 })
 
                                 //Because of async database calls, the response has to be after the final database call
@@ -116,7 +132,7 @@ module.exports = {
             name: "Gemiddelde speler",
             series: []
         }
-        const { limit } = req.param
+        const { limit } = req.query        
 
         Category
             .find()
@@ -129,26 +145,36 @@ module.exports = {
                         .find({ finished: true })
                         .select(["scores"])
                         .sort({ createdAt: 'desc' })
-                        .limit(limit)
+                        .limit(parseInt(limit))
                         .then(plays => {
-
+                            
                             if (plays.length > 0) {
                                 plays.map(p => p.toObject())
 
                                 plays.forEach(p => {
+                                    
                                     p.scores.forEach(sc => {
-                                        const c = categories.find(c => String(c._id) == String(sc.category))
-                                        const s = map.series.find(s => s.name == c.name)
+                                        if (sc.score != 0) {
+                                            console.log(sc);
+                                            
+                                            const c = categories.find(c => String(c._id) == String(sc.category))
+                                            const s = map.series.find(s => s.name == c.name)
+                                            console.log(c.name);
+                                            console.log(s);
+                                            
 
-                                        if (s == null) map.series.push({ name: c.name, scores: [] })
-                                        else if (sc.score != 0) s.scores.push(sc.score)
-                                        else {/* dont add */ }
-
+                                            if (s == null) map.series.push({ name: c.name, scores: [sc.score] })
+                                            else if (sc.score != 0) s.scores.push(sc.score)
+                                            else {/* dont add */ }
+                                        }
                                     })
                                 })
+                                
 
-
-                                map.series.forEach(s => s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length))
+                                map.series.forEach(s => {
+                                    if (s.scores.length == 1) s.value = s.scores[0] 
+                                    s.value = Math.round(s.scores.reduce((a, b) => a + b) / s.scores.length)
+                                })
                                 map.series.forEach(s => delete s.scores)
 
                                 res.status(200).json([map]).end()
@@ -182,5 +208,7 @@ module.exports = {
                 res.status(200).json(results).end()
             }).catch(err => next(new ApiError("ServerError", err, 400)))
         } else next(new ApiError("ParamError", "Please provide a valid gameID", 404))
-    }
+    },
+
+    
 }
