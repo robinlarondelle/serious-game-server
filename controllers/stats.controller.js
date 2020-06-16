@@ -97,7 +97,7 @@ module.exports = {
                                                 delete s.scores
                                             } else {
                                                 //We create a new value property inside the object which holds the average value
-                                                s.value = s.scores.reduce((total, current) => total + current) / s.scores.length
+                                                s.value = Math.round(s.scores.reduce((total, current) => total + current) / s.scores.length)
                                                 delete s.scores //And we delete the temporary datastructure which hold oud individual values
                                             }
                                         })
