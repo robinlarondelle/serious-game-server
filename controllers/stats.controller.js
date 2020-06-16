@@ -161,14 +161,15 @@ module.exports = {
     },
 
     playsPerDay(req, res, next) {
-        let map = [];
         const { gameID } = req.params
         if (gameID != null && !isNaN(gameID)) {
 
             Play.aggregate([
                 {
+                    //TODO: Add future reference for unfinished games, so you have both data sets
                     $match: {
                         'pin': parseInt(gameID),
+                        'finished': true
                     },
                 },
                 {
