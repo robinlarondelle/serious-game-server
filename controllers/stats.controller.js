@@ -265,5 +265,47 @@ module.exports = {
 
                 res.status(200).json(minPlay).end()
             })
+    },
+
+    getPercentageQuestions(req, res, next) {
+        const { pin } = req.query
+        let map = []
+
+        Category
+            .find()
+            .select("name")
+            .then(categories => {
+
+                Game
+                    .find({_id: parseInt(pin)})
+                    .then(games => {
+                        games.forEach(g => {
+                            let amountOfQuestions = []
+
+                            g.questions.forEach(q => {
+                                const category = categories.find(c => String(c._id) == q.category)
+                                console.log(category.name);
+                                
+                                const categoryIndex = amountOfQuestions.findIndex(a => a.name == category.name)
+
+                                console.log(categoryIndex);
+                                
+                                if (categoryIndex == -1) {
+                                    amountOfQuestions.push({
+                                        name: category.name,
+                                        value: 1
+                                    })
+                                } else amountOfQuestions[categoryIndex].value += 1
+                            })
+
+                            map.push({
+                                name: g.pin,
+                                series: amountOfQuestions
+                            })
+                        })
+
+                        res.status(200).json(map).end()
+                    })
+            })
     }
 }
